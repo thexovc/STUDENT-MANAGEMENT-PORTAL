@@ -15,3 +15,7 @@ const { tryCatch } = require(path.join(
   'Utils',
   'try_catch'
 ));
+
+const openAccount = (req, res) => {};
+
+module.exports = openAccount;
