@@ -4,7 +4,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const express = require('express');
 
-const { seeder } = require(path.join(__dirname, 'Routes', 'seeding.route'));
+const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
 const app = express();
 
