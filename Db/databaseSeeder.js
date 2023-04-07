@@ -10,7 +10,7 @@ const { Student } = require(path.join(
   __dirname,
   '..',
   'Models',
-  'Student.model'
+  'Student.model',
 ));
 
 const { tryCatch } = require(path.join(__dirname, '..', 'Utils', 'try_catch'));
@@ -20,11 +20,10 @@ const storingTheContentOfACsvFile = tryCatch(async (req, res, next) => {
     .on('data', (data) => arr.push(data))
     .on('end', async () => {
       await arr.forEach(async (elem) => {
-        const stu = new Student({
+        await Student.create({
           name: elem.Unnamed,
           category: elem.category_id,
         });
-        await stu.save();
         res.status(200).json('done');
       });
     });
