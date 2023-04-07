@@ -2,6 +2,12 @@ const path = require('path');
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+const { errorMiddleware } = require(path.join(
+  __dirname,
+  'Middlewares',
+  'errorHandling.middleware',
+));
+
 const express = require('express');
 
 const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
@@ -12,7 +18,7 @@ app.use(express.json()).use(express.urlencoded({ extended: false }));
 
 app.use(seeder);
 
-// app.use(errorMiddleware);
+app.use(errorMiddleware);
 
 module.exports = {
   app,
