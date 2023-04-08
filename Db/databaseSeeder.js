@@ -14,7 +14,7 @@ const { Student } = require(path.join(
   __dirname,
   '..',
   'Models',
-  'Student.model',
+  'Student.model'
 ));
 
 // const { tryCatch } = require(path.join(__dirname, '..', 'Utils', 'try_catch'));
@@ -44,7 +44,7 @@ const storingTheContentOfACsvFile = tryCatch(async (req, res) => {
     .on('end', async () => {
       arr.forEach(async (elem) => {
         Student.create({
-          name: elem.user_id,
+          fullName: elem.user_id,
           matriculationNo: elem.category_id,
         });
       });

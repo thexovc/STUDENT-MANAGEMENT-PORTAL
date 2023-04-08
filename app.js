@@ -12,11 +12,15 @@ const express = require('express');
 
 const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
+const { userRoute } = require(path.join(__dirname, 'Routes', 'auth.routes'));
+
 const app = express();
 
 app.use(express.json()).use(express.urlencoded({ extended: false }));
 
 app.use(seeder);
+
+app.use('/register', userRoute);
 
 app.use(errorMiddleware);
 
