@@ -1,4 +1,7 @@
 const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -8,7 +11,7 @@ const { errorMiddleware } = require(path.join(
   'errorHandling.middleware'
 ));
 
-const express = require('express');
+const { studentRoute } = require('./Routes/student.routes');
 
 const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
@@ -20,7 +23,15 @@ app.use(express.json()).use(express.urlencoded({ extended: false }));
 
 app.use(seeder);
 
+app.use(cookieParser());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(bodyParser.raw({ type: 'application/pdf', limit: '10mb' }));
+app.use(bodyParser.json());
+
 app.use('/smp/register', userRoute);
+app.use('/smp/student/', studentRoute);
 
 app.use(errorMiddleware);
 
