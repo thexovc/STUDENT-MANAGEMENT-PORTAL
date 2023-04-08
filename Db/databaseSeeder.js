@@ -38,7 +38,7 @@ const storingTheContentOfACsvFile = tryCatch(async (req, res, next) => {
   fs.createReadStream(path.join(__dirname, '..', '..', 'user_interest.csv'))
     .pipe(csv.parse(options))
     .on('error', () => {
-      next(new AppError('an error occurred while parsing the .csv file', 404));
+      next(new AppError('an error occurred while parsing the .csv file', 500));
     })
     .on('data', async (data) => arr.push(data))
     .on('end', async () => {

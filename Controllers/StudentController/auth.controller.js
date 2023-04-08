@@ -13,7 +13,7 @@ const { Student } = require(path.join(
   '..',
   '..',
   'Models',
-  'Student.model',
+  'Student.model'
 ));
 
 const { userSchema } = require(path.join(
@@ -29,7 +29,7 @@ const { tryCatch } = require(path.join(
   '..',
   '..',
   'Utils',
-  'try_catch',
+  'try_catch'
 ));
 
 const openAccount = tryCatch(async (req, res, next) => {
@@ -39,7 +39,7 @@ const openAccount = tryCatch(async (req, res, next) => {
     abortEarly: false,
   });
   if (error) {
-    return next(new AppError(`${error}`, 429));
+    return next(new AppError(`${error}`, 422));
   }
   const found = await Student.findOne({
     fullName: name,
@@ -49,8 +49,8 @@ const openAccount = tryCatch(async (req, res, next) => {
     return next(
       new AppError(
         'you entered an invalid name or matriculation number, please check and try again',
-        400,
-      ),
+        404
+      )
     );
   }
   Student.create({
