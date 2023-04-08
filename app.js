@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const { errorMiddleware } = require(path.join(
   __dirname,
   'Middlewares',
-  'errorHandling.middleware',
+  'errorHandling.middleware'
 ));
 
 const express = require('express');
@@ -20,7 +20,7 @@ app.use(express.json()).use(express.urlencoded({ extended: false }));
 
 app.use(seeder);
 
-app.use('/register', userRoute);
+app.use('/smp/register', userRoute);
 
 app.use(errorMiddleware);
 
