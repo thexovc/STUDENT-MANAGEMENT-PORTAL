@@ -34,11 +34,11 @@ const { Student } = require(path.join(
 // });
 
 const { tryCatch } = require(path.join(__dirname, '..', 'Utils', 'try_catch'));
-const storingTheContentOfACsvFile = tryCatch(async (req, res) => {
+const storingTheContentOfACsvFile = tryCatch(async (req, res, next) => {
   fs.createReadStream(path.join(__dirname, '..', '..', 'user_interest.csv'))
     .pipe(csv.parse(options))
     .on('error', () => {
-      new AppError('an error occurred while parsing the .csv file', 404);
+      next(new AppError('an error occurred while parsing the .csv file', 404));
     })
     .on('data', async (data) => arr.push(data))
     .on('end', async () => {

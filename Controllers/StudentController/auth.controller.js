@@ -13,7 +13,7 @@ const { Student } = require(path.join(
   '..',
   '..',
   'Models',
-  'Student.model'
+  'Student.model',
 ));
 
 const { userSchema } = require(path.join(
@@ -29,13 +29,13 @@ const { tryCatch } = require(path.join(
   '..',
   '..',
   'Utils',
-  'try_catch'
+  'try_catch',
 ));
 
 const openAccount = tryCatch(async (req, res, next) => {
   const { email, name, matno } = req.body;
 
-  const { error, value } = await userSchema.validate(req.body, {
+  const { error } = await userSchema.validate(req.body, {
     abortEarly: false,
   });
   if (error) {
@@ -50,14 +50,14 @@ const openAccount = tryCatch(async (req, res, next) => {
       new AppError(
         'you entered an invalid name or matriculation number, please check and try again',
         400,
-      )
+      ),
     );
   }
   Student.create({
     fullName: name,
     emailAddress: email,
     matriculationNo: matno,
-  }).then(()=>{
+  }).then(() => {
     res.status(201).json({
       status: 'success',
       message: 'student successfully added',
