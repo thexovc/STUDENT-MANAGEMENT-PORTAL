@@ -12,6 +12,7 @@ const { errorMiddleware } = require(path.join(
 ));
 
 const { studentRoute } = require('./Routes/student.routes');
+const { adminRoute } = require('./Routes/admin.route');
 
 const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
@@ -32,6 +33,7 @@ app.use(bodyParser.json());
 
 app.use('/smp/register', userRoute);
 app.use('/smp/student/', studentRoute);
+app.use('/smp/admin/', adminRoute);
 
 app.use(errorMiddleware);
 
