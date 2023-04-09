@@ -1,5 +1,13 @@
 const path = require('path');
 
+const { createToken } = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'Utils',
+  'createToken'
+));
+
 const { AppError } = require(path.join(
   __dirname,
   '..',
@@ -53,11 +61,21 @@ const openAccount = tryCatch(async (req, res, next) => {
       )
     );
   }
-  Student.create({
+  const newStudent = new Student({
     fullName: name,
     emailAddress: email,
     matriculationNo: matno,
-  }).then(() => {
+  });
+  newStudent.save().then(() => {
+    const token = createToken({
+      name: newStudent.fullName,
+      id: newStudent._id,
+    });
+    res.cookie('id', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
     res.status(201).json({
       status: 'success',
       message: 'student successfully added',
