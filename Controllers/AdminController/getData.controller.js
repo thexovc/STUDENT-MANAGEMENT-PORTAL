@@ -8,7 +8,15 @@ const { Student } = require(path.join(
   'Student.model'
 ));
 
-const getStudentData = async (req, res) => {
+const { tryCatch } = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'Utils',
+  'try_catch'
+));
+
+const getStudentData = tryCatch(async (req, res, next) => {
   try {
     const data = await Student.find({});
 
@@ -17,9 +25,9 @@ const getStudentData = async (req, res) => {
     console.error(error.message);
     res.sendStatus(500);
   }
-};
+});
 
-const getSingleStudent = async (req, res) => {
+const getSingleStudent = tryCatch(async (req, res, next) => {
   try {
     const matriculationNo = req.params.id;
     const studentDB = await Student.findOne({ matriculationNo });
@@ -31,9 +39,9 @@ const getSingleStudent = async (req, res) => {
   } catch (error) {
     console.log(error.message);
   }
-};
+});
 
-const getStudentByYear = async (req, res) => {
+const getStudentByYear = tryCatch(async (req, res, next) => {
   try {
     const year = req.params.id;
     console.log(year);
@@ -46,7 +54,7 @@ const getStudentByYear = async (req, res) => {
   } catch (error) {
     console.log(error.message);
   }
-};
+});
 
 module.exports = {
   getStudentData,
