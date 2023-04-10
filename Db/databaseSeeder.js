@@ -34,7 +34,7 @@ const { Student } = require(path.join(
 // });
 
 const { tryCatch } = require(path.join(__dirname, '..', 'Utils', 'try_catch'));
-const storingTheContentOfAnCsvFile = tryCatch(async (req, res, next) => {
+const storingTheContentOfACsvFile = tryCatch(async (req, res, next) => {
   fs.createReadStream(path.join(__dirname, '..', '..', 'user_interest.csv'))
     .pipe(csv.parse(options))
     .on('error', () => {
@@ -52,4 +52,4 @@ const storingTheContentOfAnCsvFile = tryCatch(async (req, res, next) => {
   res.status(200).json('done');
 });
 
-module.exports = { storingTheContentOfAnCsvFile };
+module.exports = { storingTheContentOfACsvFile };

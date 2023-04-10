@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { storingTheContentOfAnCsvFile } = require(path.join(
+const { storingTheContentOfACsvFile } = require(path.join(
   __dirname,
   '..',
   'Db',
@@ -9,6 +9,6 @@ const { storingTheContentOfAnCsvFile } = require(path.join(
 
 const seeder = require('express').Router();
 
-seeder.get('/', storingTheContentOfAnCsvFile);
+seeder.get('/', storingTheContentOfACsvFile);
 
 module.exports = seeder;
