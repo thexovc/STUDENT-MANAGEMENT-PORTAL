@@ -80,7 +80,7 @@ const uploadPDF = async (req, res) => {
         res.status(400).send({ msg: 'Student already exist!' });
       } else {
         const newStudent = await Student.create({
-          fullName: `student-${matriculationNo}`,
+          fullName: 'tina',
           emailAddress,
           matriculationNo,
           courses,
