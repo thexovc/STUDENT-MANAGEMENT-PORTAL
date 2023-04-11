@@ -74,6 +74,7 @@ const openAccount = tryCatch(async (req, res, next) => {
     res.cookie('id', token, {
       httpOnly: true,
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'development' ? false : true,
       maxAge: 1 * 24 * 60 * 60 * 1000,
     });
     res.status(201).json({

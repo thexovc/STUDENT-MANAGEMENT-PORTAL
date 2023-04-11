@@ -15,5 +15,6 @@ module.exports = {
     'import/no-dynamic-require': 'off',
     'arrow-body-style': 'off',
     'comma-dangle': 'off',
+    'no-unneeded-ternary': 'off',
   },
 };
