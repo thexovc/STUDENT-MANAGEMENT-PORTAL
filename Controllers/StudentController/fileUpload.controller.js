@@ -26,12 +26,17 @@ const uploadPDF = async (req, res) => {
     await pdfExtract.extractBuffer(pdfData, options).then(async (data) => {
       // Send the extracted text back as the response
 
+      // res.send(data);
+
       const courseCodes = /(CSC|MTH|PHY|GST|CED)\d+/;
       const matCodes = /(PSC)\d+/;
       const emailCode = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const yearRegex =
+        /^Course Result Slip (1\d{2}|2\d{2}|3\d{2}|400) \(Year [1-4]\)$/;
 
       let matriculationNo = '';
       let emailAddress = '';
+      let year = '';
       let courses = [];
 
       for (let i = 0; i < data['pages'].length; i++) {
@@ -48,10 +53,28 @@ const uploadPDF = async (req, res) => {
           if (emailCode.test(item.str)) {
             emailAddress = item.str;
           }
+          if (yearRegex.test(item.str)) {
+            let key = ['100', '200', '300', '400'];
+            let arr = item.str.split(' ');
+
+            for (let i = 0; i < arr.length; i++) {
+              let bool = false;
+              for (let j = 0; j < key.length; j++) {
+                if (arr[i] === key[j]) {
+                  bool = true;
+                  year = arr[i];
+                  break;
+                }
+              }
+              if (bool == true) {
+                break;
+              }
+            }
+          }
         }
       }
 
-      const studentDB = await Student.findOne({ emailAddress });
+      const studentDB = await Student.findOne({ emailAddress, year });
 
       if (studentDB) {
         res.status(400).send({ msg: 'Student already exist!' });
@@ -61,13 +84,14 @@ const uploadPDF = async (req, res) => {
           emailAddress,
           matriculationNo,
           courses,
+          year,
         });
         res.send(newStudent);
       }
 
       //   res.send(201);
 
-      console.log(courses, matriculationNo, emailAddress);
+      console.log(courses, matriculationNo, emailAddress, year);
     });
   } catch (error) {
     console.error(error);

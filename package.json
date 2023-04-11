@@ -125,6 +125,7 @@
     "ms": "^2.1.2",
     "natural-compare": "^1.4.0",
     "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
     "object-inspect": "^1.12.3",
     "object-keys": "^1.1.1",
     "object.assign": "^4.1.4",
