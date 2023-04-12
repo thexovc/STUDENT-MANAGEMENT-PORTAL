@@ -127,6 +127,7 @@
     "ms": "^2.1.2",
     "natural-compare": "^1.4.0",
     "nodemailer": "^6.9.1",
+    "nodemailer-express-handlebars": "^6.1.0",
     "nodemon": "^2.0.22",
     "object-inspect": "^1.12.3",
     "object-keys": "^1.1.1",
