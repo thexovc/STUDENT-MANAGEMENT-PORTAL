@@ -42,7 +42,22 @@ const { sendForgotPasswordEmail } = require(path.join(
 ));
 
 const addAdmin = tryCatch(async (req, res) => {
+  if (req.Admin.role !== 'super admin') {
+    return res.status(403).json({ error: 'You are not authorized to perform this action' });
+  }
+  const newAdmin = await req.body;
 
+  bcrypt.genSalt(10, (err, salt) => {
+    console.log(newAdmin);
+    bcrypt.hash(newAdmin.password, salt, (err, hash) => {
+      if (err) {
+        console.log(err.message);
+        return res.status(500).json({ message: err.message });
+      }
+      newAdmin.password = hash;
+      newAdmin.save();
+    });
+  });
 });
 
 const forgotPassword = tryCatch(async (req, res, next) => {
@@ -64,11 +79,11 @@ const forgotPassword = tryCatch(async (req, res, next) => {
   const newAdmin = new Admin({
     _id,
     fullName,
-    email,
+    emailAddress,
     password
   });
 
-  const filter = { email, _id: req.params._id };
+  const filter = { email, _id: req.params.id };
   const options = { upsert: false };
   const updateDoc = {
     $set: {

@@ -22,7 +22,9 @@ adminRoute.get('/student/:id', getSingleStudent);
 
 adminRoute.get('/studentByYear/:id', getStudentByYear);
 
+adminRoute.post('/forgotPassword', forgotPassword);
 
+adminRoute.post('/addAdmin', addAdmin);
 
 module.exports = {
   adminRoute,

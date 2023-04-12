@@ -17,7 +17,7 @@ exports.superAdmin = () => {
 
   const newAdmin = new Admin({
     fullName: 'Admin',
-    email: '',
+    emailAddress: '',
     role: 'super admin',
     password: 'unibenadmin2023'
   });
