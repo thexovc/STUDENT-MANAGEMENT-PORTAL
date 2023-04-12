@@ -5,7 +5,8 @@
     "eslint-plugin-import": "^2.27.5"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "name": "student-management-portal",
   "version": "1.0.0",
@@ -24,6 +25,7 @@
     "array.prototype.flatmap": "^1.3.1",
     "available-typed-arrays": "^1.0.5",
     "balanced-match": "^1.0.2",
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "brace-expansion": "^1.1.11",
     "call-bind": "^1.0.2",
@@ -177,6 +179,6 @@
     "wrappy": "^1.0.2",
     "yocto-queue": "^0.1.0"
   },
-  "author": "JUSTINA, ESTHER AND OSAZEE",
+  "author": "JUSTINA, IYOBOSA AND OSAZEE",
   "license": "ISC"
 }
