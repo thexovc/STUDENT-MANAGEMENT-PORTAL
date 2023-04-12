@@ -4,7 +4,7 @@ const {
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const adminRoute = require('express').Router();
+const adminRoute = require ('express').Router();
 
 adminRoute.get('/all', getStudentData);
 
