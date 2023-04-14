@@ -21,6 +21,11 @@ const studentSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  role: {
+    type: String,
+    enum: ['student'],
+    default: 'student'
+  }
 });
 
 const Student = mongoose.model('Student', studentSchema);

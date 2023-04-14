@@ -31,6 +31,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw({ type: 'application/pdf', limit: '10mb' }));
 app.use(bodyParser.json());
 
+const { superAdmin } = require('./seeder/admin');
+
+console.log(superAdmin());
+
 app.use('/smp/register', userRoute);
 app.use('/smp/student/', studentRoute);
 app.use('/smp/admin/', adminRoute);
