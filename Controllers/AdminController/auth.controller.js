@@ -112,6 +112,7 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 const adminLogin = (req, res, next) => {
   const { email, password } = req.body;
   const foundAdmin = Admin.findOne({ emailAddress: email }, { password: 0 });
+  req.role = foundAdmin.role ? foundAdmin.role : '';
   if (foundAdmin) {
     const isUserFound = bcrypt.compare(password, foundAdmin.password);
     if (!isUserFound) {
