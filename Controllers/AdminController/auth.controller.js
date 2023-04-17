@@ -117,13 +117,18 @@ const adminLogin = (req, res, next) => {
     const isUserFound = bcrypt.compare(password, foundAdmin.password);
     if (!isUserFound) {
       next(new (AppError('You entered an invalid email or password', 404))());
-      res.status(200).json({
-        status: 'success',
-        message: 'Admin logged in successfully',
-        data: {
-          foundAdmin,
-        },
-      });
+      if (isUserFound.role === 'super admin' || isUserFound.role === 'admin') {
+        res.status(200).json({
+          status: 'success',
+          message: 'Admin logged in successfully',
+          data: {
+            foundAdmin,
+          },
+        });
+        next(
+          new (AppError('you are not authorized to visit this route', 403))()
+        );
+      }
     }
   }
 };
