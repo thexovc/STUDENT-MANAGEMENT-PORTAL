@@ -19,6 +19,14 @@ const Authenticate = (req, res, next) => {
   }
 };
 
+const isAdmin = (req, res, next) => {
+  if (req.role === 'super admin' || req.role === 'admin') {
+    next();
+  }
+  next(new (AppError('you are not authorized to visit this route', 401)));
+};
+
 module.exports = {
   Authenticate,
+  isAdmin,
 };
