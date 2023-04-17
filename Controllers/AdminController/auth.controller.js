@@ -33,6 +33,8 @@ const { tryCatch } = require(path.join(
   'try_catch'
 ));
 
+const { isAdmin } = require(path.join(__dirname, '..', 'Utils', 'isAdmin'));
+
 const { sendForgotPasswordEmail } = require(path.join(
   __dirname,
   '..',
@@ -112,25 +114,11 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 const adminLogin = (req, res, next) => {
   const { email, password } = req.body;
   const foundAdmin = Admin.findOne({ emailAddress: email }, { password: 0 });
-  req.role = foundAdmin.role ? foundAdmin.role : '';
-  if (foundAdmin) {
-    const isUserFound = bcrypt.compare(password, foundAdmin.password);
-    if (!isUserFound) {
-      next(new (AppError('You entered an invalid email or password', 404))());
-      if (isUserFound.role === 'super admin' || isUserFound.role === 'admin') {
-        res.status(200).json({
-          status: 'success',
-          message: 'Admin logged in successfully',
-          data: {
-            foundAdmin,
-          },
-        });
-        next(
-          new (AppError('you are not authorized to visit this route', 403))()
-        );
-      }
-    }
+  const isUserFound = bcrypt.compare(password, foundAdmin.password);
+  if (foundAdmin && isUserFound) {
+    return isAdmin(foundAdmin);
   }
+  next(new (AppError('You entered an invalid email or password', 404))());
 };
 
 module.exports = {
