@@ -43,7 +43,9 @@ const { sendForgotPasswordEmail } = require(path.join(
 
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
-    return res.status(403).json({ error: 'You are not authorized to perform this action' });
+    return res
+      .status(403)
+      .json({ error: 'You are not authorized to perform this action' });
   }
   const newAdmin = await req.body;
 
@@ -66,12 +68,7 @@ const forgotPassword = tryCatch(async (req, res, next) => {
   const admin = await Admin.findOne({ email });
 
   if (!admin) {
-    return next(
-      new AppError(
-        'Admin does not exist',
-        404
-      )
-    );
+    return next(new AppError('Admin does not exist', 404));
   }
 
   const { _id } = req.params;
@@ -80,14 +77,14 @@ const forgotPassword = tryCatch(async (req, res, next) => {
     _id,
     fullName,
     emailAddress,
-    password
+    password,
   });
 
   const filter = { email, _id: req.params.id };
   const options = { upsert: false };
   const updateDoc = {
     $set: {
-      newAdmin
+      newAdmin,
     },
   };
 
@@ -108,16 +105,30 @@ const forgotPassword = tryCatch(async (req, res, next) => {
   const emailSent = await sendForgotPasswordEmail({ email, password });
 
   if (!emailSent) {
-    return next(
-      new AppError(
-        'Forgot password email not sent',
-        404
-      )
-    );
+    return next(new AppError('Forgot password email not sent', 404));
   }
 });
 
+const adminLogin = (req, res, next) => {
+  const { email, password } = req.body;
+  const foundAdmin = Admin.findOne({ emailAddress: email }, { password: 0 });
+  if (foundAdmin) {
+    const isUserFound = bcrypt.compare(password, foundAdmin.password);
+    if (!isUserFound) {
+      next(new (AppError('You entered an invalid email or password', 404))());
+      res.status(200).json({
+        status: 'success',
+        message: 'Admin logged in successfully',
+        data: {
+          foundAdmin,
+        },
+      });
+    }
+  }
+};
+
 module.exports = {
   addAdmin,
-  forgotPassword
+  forgotPassword,
+  adminLogin,
 };
