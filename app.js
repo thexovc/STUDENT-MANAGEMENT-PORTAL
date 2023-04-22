@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -19,6 +20,7 @@ const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 const { userRoute } = require(path.join(__dirname, 'Routes', 'auth.routes'));
 
 const app = express();
+app.use(cors());
 
 app.use(express.json()).use(express.urlencoded({ extended: false }));
 
