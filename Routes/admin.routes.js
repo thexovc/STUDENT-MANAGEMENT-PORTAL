@@ -1,10 +1,18 @@
+const { join } = require('path');
 const {
   getStudentData,
   getSingleStudent,
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const { isAdmin } = require(path.join(
+const { adminLogin } = require(join(
+  __dirname,
+  '..',
+  'Controller',
+  'AdminController'
+));
+
+const { isAdmin } = require(join(
   __dirname,
   '..',
   'Middlewares',
@@ -14,7 +22,6 @@ const { isAdmin } = require(path.join(
 const {
   forgotPassword,
   addAdmin,
-  adminLogin,
 } = require('../Controllers/AdminController/auth.controller');
 
 const adminRoute = require('express').Router();
