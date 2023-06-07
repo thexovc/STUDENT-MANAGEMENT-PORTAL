@@ -1,3 +1,9 @@
+const { join } = require('path');
+
+const { tryCatch } = require(join(__dirname, '..', '..', 'Utils', 'try_catch'));
+
+const { Admin } = require(join(__dirname, '..', '..', 'Model', 'Admin.model'));
+
 const { AppError } = require(join(__dirname, '..', '..', 'Utils', 'appError'));
 
 const bcrypt = require('bcrypt');
