@@ -113,9 +113,12 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 const adminLogin = tryCatch(async (req, res, next) => {
   const { email, password } = req.body;
   const found = await Admin.findOne({ emailAddress: email });
+
   if (!found) return next(new AppError('Invalid email or password', 404));
   const match = await bcrypt.compare(password, found.password);
+
   if (!match) return next(new AppError('Invalid email or password', 404));
+
   await delete found._doc['password'];
   const token = await createToken(found._id);
   res.cookie('id', `${token}`, {
