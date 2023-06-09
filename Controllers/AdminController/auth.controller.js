@@ -115,7 +115,7 @@ const deleteAdmin = tryCatch(async (req, res, next) => {
     await Admin.deleteOne({ emailAddress: email }).exec();
     res.status(200).json({ message: 'Admin added successfully.' });
   } catch (error) {
-    return next(new AppError('Error deleting admin', 400));
+    return next(new AppError('Error deleting admin.', 400));
   }
 });
 
