@@ -1,21 +1,9 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
 
-const { createToken } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'createToken'
-));
+const { createToken } = require('../../Utils/createToken');
 
-const { AppError } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'appError'
-));
+const { AppError } = require('../../Utils/appError');
 
 const { Admin } = require(path.join(
   __dirname,
