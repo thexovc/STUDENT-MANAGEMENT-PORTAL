@@ -2,42 +2,12 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 
 const { createToken } = require('../../Utils/createToken');
-
 const { AppError } = require('../../Utils/appError');
-
-const { Admin } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Models',
-  'Admin.model'
-));
-
-const { tryCatch } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'try_catch'
-));
-
-const bcrypt = require('bcrypt');
-
-const { loginSchema } = require(path.join(
-  __dirname,
-  '..',
-  'schemaValidations.joi'
-));
-
-const { isAdmin } = require(path.join(__dirname, '..', 'Utils', 'isAdmin'));
-
-const { sendForgotPasswordEmail } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'email'
-));
+const { Admin } = require('../../Models/Admin.model');
+const { tryCatch } = require('../../Utils/try_catch');
+const { loginSchema } = require('../schemaValidations.joi');
+const { isAdmin } = require('../Utils/isAdmin');
+const { sendForgotPasswordEmail } = require('../../Utils/email');
 
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
