@@ -1,14 +1,6 @@
-const path = require('path');
-
 const PDFExtract = require('pdf.js-extract').PDFExtract;
 
-const { Student } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Models',
-  'Student.model'
-));
+const { Student } = require('../../Models/Student.model');
 
 const uploadPDF = async (req, res) => {
   try {

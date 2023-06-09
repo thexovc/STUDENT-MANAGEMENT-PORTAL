@@ -1,14 +1,10 @@
-const { join } = require('path');
-
-const { tryCatch } = require(join(__dirname, '..', '..', 'Utils', 'try_catch'));
-
-const { Admin } = require(join(__dirname, '..', '..', 'Model', 'Admin.model'));
-
-const { AppError } = require(join(__dirname, '..', '..', 'Utils', 'appError'));
-
 const bcrypt = require('bcrypt');
 
-const { loginSchema } = require(join(__dirname, '..', 'schemaValidations.joi'));
+const { tryCatch } = require('../../Utils/try_catch');
+const { Admin } = require(join('../../Model/Admin.model');
+const { AppError } = require('../../Utils/appError');
+const { loginSchema } = require('../schemaValidations.joi');
+
 
 const adminLogin = tryCatch(async (req, res, next) => {
   const { error } = loginSchema.validate(req.body);

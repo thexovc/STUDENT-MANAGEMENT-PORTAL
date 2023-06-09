@@ -1,8 +1,7 @@
 const path = require('path');
 
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-
-const { AppError } = require(path.join(__dirname, '..', 'Utils', 'appError'));
+const { AppError } = require('../Utils/appError');
 
 const jwt = require('jsonwebtoken');
 
@@ -21,6 +20,4 @@ const Authenticate = (req, res, next) => {
 
 module.exports = {
   Authenticate,
-  isAdmin,
-  isStudent,
 };
