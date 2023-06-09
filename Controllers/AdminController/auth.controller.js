@@ -35,7 +35,11 @@ const { tryCatch } = require(path.join(
 
 const bcrypt = require('bcrypt');
 
-const { loginSchema } = require(path.join(__dirname, '..', 'schemaValidations.joi'));
+const { loginSchema } = require(path.join(
+  __dirname,
+  '..',
+  'schemaValidations.joi'
+));
 
 const { isAdmin } = require(path.join(__dirname, '..', 'Utils', 'isAdmin'));
 
@@ -124,7 +128,6 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 //   }
 //   next(new (AppError('You entered an invalid email or password', 404))());
 // };
-
 
 const adminLogin = tryCatch(async (req, res, next) => {
   const { error } = loginSchema.validate(req.body);

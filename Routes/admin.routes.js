@@ -1,16 +1,10 @@
-const { join } = require('path');
 const {
   getStudentData,
   getSingleStudent,
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const { isAdmin } = require(join(
-  __dirname,
-  '..',
-  'Middlewares',
-  'Authentication'
-));
+const { isAdmin } = require('../Utils/isAdmin');
 
 const {
   forgotPassword,

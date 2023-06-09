@@ -5,7 +5,7 @@ const { openAccount } = require(path.join(
   '..',
   'Controllers',
   'StudentController',
-  'auth.controller',
+  'auth.controller'
 ));
 
 const userRoute = require('express').Router();
