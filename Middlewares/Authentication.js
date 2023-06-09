@@ -21,6 +21,4 @@ const Authenticate = (req, res, next) => {
 
 module.exports = {
   Authenticate,
-  isAdmin,
-  isStudent,
 };

@@ -56,7 +56,7 @@ const openAccount = tryCatch(async (req, res, next) => {
   if (!found) {
     return next(
       new AppError(
-        'you entered an invalid name or matriculation number, please check and try again',
+        'You entered an invalid name or matriculation number, please check and try again',
         404
       )
     );
@@ -79,7 +79,7 @@ const openAccount = tryCatch(async (req, res, next) => {
     });
     res.status(201).json({
       status: 'success',
-      message: 'student successfully added',
+      message: 'Student successfully added',
       data: {
         name,
         matno,

@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const path = require('path');
 
 const { createToken } = require(path.join(
@@ -34,10 +33,6 @@ const { tryCatch } = require(path.join(
 ));
 
 const bcrypt = require('bcrypt');
-
-const { loginSchema } = require(path.join(__dirname, '..', '..','schemaValidations.joi'));
-
-const { isAdmin } = require(path.join(__dirname, '..', 'Utils', 'isAdmin'));
 
 const { sendForgotPasswordEmail } = require(path.join(
   __dirname,
@@ -116,20 +111,28 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 });
 
 const adminLogin = tryCatch(async (req, res, next) => {
-  const { error } = loginSchema.validate(req.body);
-  if (!error) {
-    const { email, password } = req.body;
-    const found = await Admin.findOne({ emailAddress: email });
+  const { email, password } = req.body;
+  const found = await Admin.findOne({ emailAddress: email });
+  if (found) {
     const match = await bcrypt.compare(password, found.password);
-    // remove password from the payload and send
-    if (found && match) {
-      const payload = { ...found };
-      delete payload.password;
-      return isAdmin(payload);
+    if (match) {
+      await delete found._doc['password'];
+      const token = await createToken(found._id);
+      res.cookie('id', `${token}`, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 2,
+      });
+      return res.status(200).json({
+        success: true,
+        message: 'Admin logged in successfully',
+        data: found,
+      });
     }
     return next(new AppError('Invalid email or password', 404));
   }
-  return next(new AppError(error, 422));
+  // remove password from the payload and send
+
+  return next(new AppError('Invalid email or password', 404));
 });
 
 module.exports = {

@@ -30,7 +30,7 @@ adminRoute.post('/forgotPassword', forgotPassword);
 
 adminRoute.post('/addAdmin', addAdmin);
 
-adminRoute.post('/login', isAdmin, adminLogin);
+adminRoute.post('/login',adminLogin);
 
 module.exports = {
   adminRoute,
