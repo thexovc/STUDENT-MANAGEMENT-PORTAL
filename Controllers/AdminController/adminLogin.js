@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const { tryCatch } = require('../../Utils/try_catch');
 const { Admin } = require(join('../../Model/Admin.model');
 const { AppError } = require('../../Utils/appError');
-const { loginSchema } = require('../schemaValidations.joi');
+const { loginSchema } = require('../../Utils/schemaValidations.joi');
 
 
 const adminLogin = tryCatch(async (req, res, next) => {

@@ -5,8 +5,8 @@ const { createToken } = require('../../Utils/createToken');
 const { AppError } = require('../../Utils/appError');
 const { Admin } = require('../../Models/Admin.model');
 const { tryCatch } = require('../../Utils/try_catch');
-const { loginSchema } = require('../schemaValidations.joi');
-const { isAdmin } = require('../Utils/isAdmin');
+const { loginSchema } = require('../../Utils/schemaValidations.joi');
+const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
 const addAdmin = tryCatch(async (req, res) => {
