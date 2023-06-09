@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const Authenticate = (req, res, next) => {
   if (req.cookie.id) {
     const contentId = req.headers.cookie.split(';')[0];
-    const newContentId = contentId.split('value=')[1];
+    const newContentId = contentId.split('id=')[1];
     jwt.verify(newContentId, process.env.SECRET, (err, decode) => {
       if (err) {
         return new AppError(`${err}`, 403);
