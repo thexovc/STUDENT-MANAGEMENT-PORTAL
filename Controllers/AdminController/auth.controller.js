@@ -35,7 +35,7 @@ const { tryCatch } = require(path.join(
 
 const bcrypt = require('bcrypt');
 
-const { loginSchema } = require(path.join(__dirname, '..', 'schemaValidations.joi'));
+const { loginSchema } = require(path.join(__dirname, '..', '..','schemaValidations.joi'));
 
 const { isAdmin } = require(path.join(__dirname, '..', 'Utils', 'isAdmin'));
 
@@ -114,17 +114,6 @@ const forgotPassword = tryCatch(async (req, res, next) => {
     return next(new AppError('Forgot password email not sent', 404));
   }
 });
-
-// const adminLogin = (req, res, next) => {
-//   const { email, password } = req.body;
-//   const foundAdmin = Admin.findOne({ emailAddress: email }, { password: 0 });
-//   const isUserFound = bcrypt.compare(password, foundAdmin.password);
-//   if (foundAdmin && isUserFound) {
-//     return isAdmin(foundAdmin);
-//   }
-//   next(new (AppError('You entered an invalid email or password', 404))());
-// };
-
 
 const adminLogin = tryCatch(async (req, res, next) => {
   const { error } = loginSchema.validate(req.body);
