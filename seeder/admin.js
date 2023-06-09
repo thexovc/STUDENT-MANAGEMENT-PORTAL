@@ -1,12 +1,7 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
 
-const { Admin } = require(path.join(
-  __dirname,
-  '..',
-  'Models',
-  'Admin.model'
-));
+const { Admin } = require(path.join(__dirname, '..', 'Models', 'Admin.model'));
 // const dotenv = require('dotenv').config();
 
 exports.superAdmin = () => {
@@ -17,9 +12,9 @@ exports.superAdmin = () => {
 
   const newAdmin = new Admin({
     fullName: 'Admin',
-    emailAddress: '',
+    emailAddress: 'superAdmin2023@gmail.com',
     role: 'super admin',
-    password: 'unibenadmin2023'
+    password: 'Unibenadmin2023@',
   });
 
   bcrypt.genSalt(10, (err2, salt) => {

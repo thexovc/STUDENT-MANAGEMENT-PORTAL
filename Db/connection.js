@@ -11,7 +11,7 @@ const Db = () => {
       useUnifiedTopology: true,
     })
     .then(() => {
-      console.log('running');
+      console.log('connected and running');
     })
     .catch((error) => {
       console.log(error);

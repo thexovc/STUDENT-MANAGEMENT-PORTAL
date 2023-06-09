@@ -10,20 +10,18 @@ const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
 const adminLogin = tryCatch(async (req, res, next) => {
-  const { error } = loginSchema.validate(req.body);
-  if (!error) {
-    const { email, password } = req.body;
-    const found = await Admin.findOne({ emailAddress: email });
-    const match = await bcrypt.compare(password, found.password);
-    // remove password from the payload and send
-    if (found && match) {
-      const payload = { ...found };
-      delete payload.password;
-      return isAdmin(payload);
-    }
-    return next(new AppError('Invalid email or password', 404));
+  const { email, password } = req.body;
+
+  const found = await Admin.findOne({ emailAddress: email });
+  const match = await bcrypt.compare(password, found.password);
+
+  // remove password from the payload and send
+  if (found && match) {
+    const payload = { found };
+    delete payload.password;
+    return isAdmin(payload);
   }
-  return next(new AppError(error, 422));
+  return next(new AppError('Invalid email or password', 404));
 });
 
 const addAdmin = tryCatch(async (req, res) => {
@@ -32,6 +30,7 @@ const addAdmin = tryCatch(async (req, res) => {
       .status(403)
       .json({ error: 'You are not authorized to perform this action' });
   }
+
   const newAdmin = await req.body;
 
   bcrypt.genSalt(10, (err, salt) => {
@@ -99,7 +98,13 @@ const forgotPassword = tryCatch(async (req, res, next) => {
   }
 });
 
-const deleteAdmin = tryCatch(async (req, res, next) => {
+const deleteAdmin = tryCatch(async (req, res) => {
+  if (req.Admin.role !== 'super admin') {
+    return res
+      .status(403)
+      .json({ error: 'You are not authorized to perform this action' });
+  }
+
   try {
     const { email } = req.body;
 

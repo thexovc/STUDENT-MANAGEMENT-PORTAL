@@ -12,6 +12,7 @@ const {
   adminLogin,
   deleteAdmin,
 } = require('../Controllers/AdminController/auth.controller');
+const { Authenticate } = require('../Middlewares/Authentication');
 
 const adminRoute = require('express').Router();
 
@@ -25,9 +26,9 @@ adminRoute.post('/forgotPassword', forgotPassword);
 
 adminRoute.post('/addAdmin', addAdmin);
 
-adminRoute.post('/login', isAdmin, adminLogin);
+adminRoute.post('/login', adminLogin);
 
-adminRoute.post('/delete', isAdmin, deleteAdmin);
+adminRoute.post('/delete', deleteAdmin);
 
 module.exports = {
   adminRoute,
