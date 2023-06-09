@@ -4,7 +4,7 @@ const {
   uploadPDF,
 } = require('../Controllers/StudentController/fileUpload.controller');
 
-// studentRoute.post('/upload', uploadPDF);
+studentRoute.post('/upload', uploadPDF);
 
 module.exports = {
   studentRoute,
