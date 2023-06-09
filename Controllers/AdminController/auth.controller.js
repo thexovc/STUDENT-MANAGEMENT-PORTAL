@@ -9,6 +9,23 @@ const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
+const adminLogin = tryCatch(async (req, res, next) => {
+  const { error } = loginSchema.validate(req.body);
+  if (!error) {
+    const { email, password } = req.body;
+    const found = await Admin.findOne({ emailAddress: email });
+    const match = await bcrypt.compare(password, found.password);
+    // remove password from the payload and send
+    if (found && match) {
+      const payload = { ...found };
+      delete payload.password;
+      return isAdmin(payload);
+    }
+    return next(new AppError('Invalid email or password', 404));
+  }
+  return next(new AppError(error, 422));
+});
+
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
     return res
@@ -18,16 +35,21 @@ const addAdmin = tryCatch(async (req, res) => {
   const newAdmin = await req.body;
 
   bcrypt.genSalt(10, (err, salt) => {
-    console.log(newAdmin);
     bcrypt.hash(newAdmin.password, salt, (err, hash) => {
       if (err) {
         console.log(err.message);
         return res.status(500).json({ message: err.message });
       }
       newAdmin.password = hash;
-      newAdmin.save();
+
+      // newAdmin.save();
     });
   });
+
+  // console.log('newAdmin', newAdmin);
+  const adminData = await Admin.create(newAdmin);
+
+  res.send(adminData);
 });
 
 const forgotPassword = tryCatch(async (req, res, next) => {
@@ -77,6 +99,26 @@ const forgotPassword = tryCatch(async (req, res, next) => {
   }
 });
 
+const deleteAdmin = tryCatch(async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const adminToDelete = await Admin.findOne({ emailAddress: email }).exec();
+    if (!adminToDelete) {
+      return next(new AppError('Admin not found', 404));
+    }
+
+    if (adminToDelete.role === 'super admin') {
+      return next(new AppError('Cannot delete super admin', 403));
+    }
+
+    await Admin.deleteOne({ emailAddress: email }).exec();
+    res.status(200).json({ message: 'Admin added successfully.' });
+  } catch (error) {
+    return next(new AppError('Error deleting admin', 400));
+  }
+});
+
 // const adminLogin = (req, res, next) => {
 //   const { email, password } = req.body;
 //   const foundAdmin = Admin.findOne({ emailAddress: email }, { password: 0 });
@@ -87,25 +129,9 @@ const forgotPassword = tryCatch(async (req, res, next) => {
 //   next(new (AppError('You entered an invalid email or password', 404))());
 // };
 
-const adminLogin = tryCatch(async (req, res, next) => {
-  const { error } = loginSchema.validate(req.body);
-  if (!error) {
-    const { email, password } = req.body;
-    const found = await Admin.findOne({ emailAddress: email });
-    const match = await bcrypt.compare(password, found.password);
-    // remove password from the payload and send
-    if (found && match) {
-      const payload = { ...found };
-      delete payload.password;
-      return isAdmin(payload);
-    }
-    return next(new AppError('Invalid email or password', 404));
-  }
-  return next(new AppError(error, 422));
-});
-
 module.exports = {
   addAdmin,
   forgotPassword,
   adminLogin,
+  deleteAdmin,
 };
