@@ -126,9 +126,16 @@ const adminLogin = tryCatch(async (req, res, next) => {
     maxAge: 1000 * 60 * 60 * 24 * 2,
   });
   return res.status(200).json({
-        success: true,
-        message: 'Admin logged in successfully',
-        data: found,
+    success: true,
+    message: 'Admin logged in successfully',
+    data: found,
+  });
+});
+
+const adminDance = tryCatch(async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    message: 'oooook',
   });
 });
 
@@ -136,4 +143,5 @@ module.exports = {
   addAdmin,
   forgotPassword,
   adminLogin,
+  adminDance
 };

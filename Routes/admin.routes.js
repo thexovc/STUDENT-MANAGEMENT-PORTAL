@@ -5,7 +5,7 @@ const {
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const { isAdmin } = require(join(
+const { Authenticate} = require(join(
   __dirname,
   '..',
   'Middlewares',
@@ -16,6 +16,7 @@ const {
   forgotPassword,
   addAdmin,
   adminLogin,
+  adminDance
 } = require('../Controllers/AdminController/auth.controller');
 
 const adminRoute = require('express').Router();
@@ -30,7 +31,7 @@ adminRoute.post('/forgotPassword', forgotPassword);
 
 adminRoute.post('/addAdmin', addAdmin);
 
-adminRoute.post('/login',adminLogin);
+adminRoute.post('/login', adminLogin);
 
 module.exports = {
   adminRoute,

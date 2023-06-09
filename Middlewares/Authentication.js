@@ -7,9 +7,8 @@ const { AppError } = require(path.join(__dirname, '..', 'Utils', 'appError'));
 const jwt = require('jsonwebtoken');
 
 const Authenticate = (req, res, next) => {
-  if (req.cookie.id) {
-    const contentId = req.headers.cookie.split(';')[0];
-    const newContentId = contentId.split('id=')[1];
+  if (req.cookies.id) {
+    const newContentId = req.cookies.id;
     jwt.verify(newContentId, process.env.SECRET, (err, decode) => {
       if (err) {
         return new AppError(`${err}`, 403);
