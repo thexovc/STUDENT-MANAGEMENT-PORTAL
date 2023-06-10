@@ -13,11 +13,11 @@ const Authenticate = (req, res, next) => {
       if (err) {
         return new AppError(`${err}`, 403);
       }
+      req.user = decode;
       next();
     });
   }
 };
-
 module.exports = {
   Authenticate,
 };
