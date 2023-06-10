@@ -8,9 +8,9 @@ const {
   forgotPassword,
   addAdmin,
   deleteAdmin,
+  adminLogin,
 } = require('../Controllers/AdminController/auth.controller');
 const { Authenticate } = require('../Middlewares/Authentication');
-const { adminLogin } = require('../Controllers/AdminController/adminLogin');
 
 const adminRoute = require('express').Router();
 

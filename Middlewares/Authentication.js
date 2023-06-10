@@ -1,7 +1,8 @@
 const path = require('path');
 
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-const { AppError } = require('../Utils/appError');
+
+const { AppError } = require(path.join(__dirname, '..', 'Utils', 'appError'));
 
 const jwt = require('jsonwebtoken');
 
