@@ -79,7 +79,7 @@ const openAccount = tryCatch(async (req, res, next) => {
       maxAge: 1 * 24 * 60 * 60 * 1000,
     });
     res.status(201).json({
-      status: 'success',
+      success: true,
       message: 'Student successfully added',
       data: {
         name,
