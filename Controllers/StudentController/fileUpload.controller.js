@@ -1,53 +1,73 @@
-const PDFExtract = require('pdf.js-extract').PDFExtract;
-
 const { Student } = require('../../Models/Student.model');
+const pdfParse = require('pdf-parse');
 
 const uploadPDF = async (req, res) => {
+  const pdfFile = req.file;
+
   try {
-    const pdfData = req.body;
+    pdfParse(pdfFile.buffer)
+      .then(async (data) => {
+        const extractedData = data.text;
+        // Process the extracted data as needed
+        const nameRegex = /Name:\s*([A-Za-z\s]+)/;
+        const sessionString = 'Session:\\s*\\d{4}';
 
-    // Initialize the PDFExtract object
-    const pdfExtract = new PDFExtract();
+        const sessionCode = new RegExp(sessionString);
 
-    // Set up the options for PDFExtract
-    const options = {
-      type: 'text',
-    };
+        const courseCodes = /(CSC|MTH|PHY|GST|CED)\s*/;
+        const matCodes = /PSC\d{6}/;
+        const emailCode = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const yearRegex =
+          /^Course Result Slip (1\d{2}|2\d{2}|3\d{2}|400) \(Year [1-4]\)$/;
 
-    // Extract the text from the PDF file
-    await pdfExtract.extractBuffer(pdfData, options).then(async (data) => {
-      // Send the extracted text back as the response
+        let name = '';
+        let matriculationNo = '';
+        let emailAddress = '';
+        let year = '';
+        let session = '';
+        let courses = [];
 
-      // res.send(data);
+        const strings = extractedData.split('\n');
 
-      const courseCodes = /(CSC|MTH|PHY|GST|CED)\d+/;
-      const matCodes = /(PSC)\d+/;
-      const emailCode = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const yearRegex =
-        /^Course Result Slip (1\d{2}|2\d{2}|3\d{2}|400) \(Year [1-4]\)$/;
+        // Loop over each string and search for matches
 
-      let matriculationNo = '';
-      let emailAddress = '';
-      let year = '';
-      let courses = [];
-
-      for (let i = 0; i < data['pages'].length; i++) {
-        const dataArray = data['pages'][i]['content'];
-
-        for (let i = 0; i < dataArray.length; i++) {
-          let item = dataArray[i];
-          if (courseCodes.test(item.str)) {
-            courses.push(item.str);
+        strings.forEach((string) => {
+          if (nameRegex.test(string)) {
+            // Match found for name
+            name = string.slice(5);
           }
-          if (matCodes.test(item.str)) {
-            matriculationNo = item.str;
+          if (sessionCode.test(string)) {
+            session = string.slice(8);
           }
-          if (emailCode.test(item.str)) {
-            emailAddress = item.str;
+          if (courseCodes.test(string)) {
+            const matchCourse = string.slice(0, 6);
+            const matchName = string.slice(6, -7);
+            const regex = /\d{3}/;
+            const hasThreeNumbers = regex.test(matchCourse);
+
+            if (hasThreeNumbers) {
+              courses.push({
+                code: matchCourse,
+                name: matchName,
+                credit: `3 credit`,
+              });
+            }
           }
-          if (yearRegex.test(item.str)) {
+          if (matCodes.test(string)) {
+            const modifiedStr = string
+              .replace(/^Matriculation Number:/, '')
+              .trim();
+
+            matriculationNo = modifiedStr;
+          }
+          if (emailCode.test(string)) {
+            const email = string.replace(/^Email:\s*/, '');
+
+            emailAddress = email;
+          }
+          if (yearRegex.test(string)) {
             let key = ['100', '200', '300', '400'];
-            let arr = item.str.split(' ');
+            let arr = string.split(' ');
 
             for (let i = 0; i < arr.length; i++) {
               let bool = false;
@@ -63,32 +83,125 @@ const uploadPDF = async (req, res) => {
               }
             }
           }
-        }
-      }
-
-      const studentDB = await Student.findOne({ emailAddress, year });
-
-      if (studentDB) {
-        res.status(400).send({ msg: 'Student already exist!' });
-      } else {
-        const newStudent = await Student.create({
-          fullName: 'tina',
-          emailAddress,
-          matriculationNo,
-          courses,
-          year,
         });
-        res.send(newStudent);
-      }
 
-      //   res.send(201);
+        const studentDB = await Student.findOne({ emailAddress, year });
 
-      console.log(courses, matriculationNo, emailAddress, year);
-    });
+        if (studentDB) {
+          res.status(400).send({ msg: 'Student already exist!' });
+        } else {
+          const newStudent = await Student.create({
+            fullName: name,
+            emailAddress,
+            matriculationNo,
+            courses,
+            year,
+            session,
+          });
+          // console.log(newStudent);
+          res.send(newStudent);
+        }
+        // res.send('eorkk');
+
+        // // console.log(name, courses, matriculationNo, emailAddress, year, session);
+      })
+      .catch((error) => {
+        // Handle errors
+        res.status(500).json({
+          error: 'An error occurred while parsing the PDF.',
+          msg: error,
+        });
+      });
   } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
+    res.status(400).send('an error occured');
   }
+
+  // try {
+  //   const pdfData = req.body;
+
+  //   // Initialize the PDFExtract object
+  //   const pdfExtract = new PDFExtract();
+
+  //   // Set up the options for PDFExtract
+  //   const options = {
+  //     type: 'text',
+  //   };
+
+  //   // Extract the text from the PDF file
+  //   await pdfExtract.extractBuffer(pdfData, options).then(async (data) => {
+  //     // Send the extracted text back as the response
+
+  //     // res.send(data);
+
+  //     const courseCodes = /(CSC|MTH|PHY|GST|CED)\d+/;
+  //     const matCodes = /(PSC)\d+/;
+  //     const emailCode = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //     const yearRegex =
+  //       /^Course Result Slip (1\d{2}|2\d{2}|3\d{2}|400) \(Year [1-4]\)$/;
+
+  //     let matriculationNo = '';
+  //     let emailAddress = '';
+  //     let year = '';
+  //     let courses = [];
+
+  //     for (let i = 0; i < data['pages'].length; i++) {
+  //       const dataArray = data['pages'][i]['content'];
+
+  //       for (let i = 0; i < dataArray.length; i++) {
+  //         let item = dataArray[i];
+  //         if (courseCodes.test(item.str)) {
+  //           courses.push(item.str);
+  //         }
+  //         if (matCodes.test(item.str)) {
+  //           matriculationNo = item.str;
+  //         }
+  //         if (emailCode.test(item.str)) {
+  //           emailAddress = item.str;
+  //         }
+  //         if (yearRegex.test(item.str)) {
+  //           let key = ['100', '200', '300', '400'];
+  //           let arr = item.str.split(' ');
+
+  //           for (let i = 0; i < arr.length; i++) {
+  //             let bool = false;
+  //             for (let j = 0; j < key.length; j++) {
+  //               if (arr[i] === key[j]) {
+  //                 bool = true;
+  //                 year = arr[i];
+  //                 break;
+  //               }
+  //             }
+  //             if (bool == true) {
+  //               break;
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     const studentDB = await Student.findOne({ emailAddress, year });
+
+  //     if (studentDB) {
+  //       res.status(400).send({ msg: 'Student already exist!' });
+  //     } else {
+  //       const newStudent = await Student.create({
+  //         fullName: 'tina',
+  //         emailAddress,
+  //         matriculationNo,
+  //         courses,
+  //         year,
+  //       });
+  //       res.send(newStudent);
+  //     }
+
+  //     //   res.send(201);
+
+  //     console.log(courses, matriculationNo, emailAddress, year);
+  //   });
+  // } catch (error) {
+  //   console.error(error);
+  //   res.sendStatus(500);
+  // }
 };
 
 module.exports = {
