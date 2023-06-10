@@ -132,16 +132,8 @@ const adminLogin = tryCatch(async (req, res, next) => {
   });
 });
 
-const adminDance = tryCatch(async (req, res, next) => {
-  res.status(200).json({
-    success: true,
-    message: 'oooook',
-  });
-});
-
 module.exports = {
   addAdmin,
   forgotPassword,
   adminLogin,
-  adminDance
 };
