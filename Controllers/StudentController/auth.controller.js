@@ -56,7 +56,7 @@ const openAccount = tryCatch(async (req, res, next) => {
   if (!found) {
     return next(
       new AppError(
-        'You entered an invalid name or matriculation number, please check and try again',
+        'You entered an invalid name or matriculation number',
         404
       )
     );
