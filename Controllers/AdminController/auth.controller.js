@@ -32,8 +32,6 @@ const { tryCatch } = require(path.join(
   'try_catch'
 ));
 
-const bcrypt = require('bcrypt');
-
 const { sendForgotPasswordEmail } = require(path.join(
   __dirname,
   '..',

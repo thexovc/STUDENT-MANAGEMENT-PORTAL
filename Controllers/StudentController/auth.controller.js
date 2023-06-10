@@ -1,5 +1,7 @@
 const path = require('path');
 
+const bcrypt = require('bcrypt');
+
 const { createToken } = require(path.join(
   __dirname,
   '..',
@@ -41,14 +43,12 @@ const { tryCatch } = require(path.join(
 ));
 
 const openAccount = tryCatch(async (req, res, next) => {
-  const { email, name, matno } = req.body;
+  const { email, name, matno, password } = req.body;
 
   const { error } = await userSchema.validate(req.body, {
     abortEarly: false,
   });
-  if (error) {
-    return next(new AppError(`${error}`, 422));
-  }
+  if (error) return next(new AppError(`${error}`, 422));
   const found = await Student.findOne({
     fullName: name,
     matriculationNo: matno,
@@ -61,14 +61,15 @@ const openAccount = tryCatch(async (req, res, next) => {
       )
     );
   }
+  const hash = await bcrypt.hash(password, process.env.ROUNDS);
   const newStudent = new Student({
     fullName: name,
     emailAddress: email,
     matriculationNo: matno,
+    password: hash,
   });
   newStudent.save().then(() => {
     const token = createToken({
-      name: newStudent.fullName,
       id: newStudent._id,
     });
     res.cookie('id', token, {
