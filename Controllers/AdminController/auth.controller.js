@@ -8,22 +8,6 @@ const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
-const { tryCatch } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'try_catch'
-));
-
-const { sendForgotPasswordEmail } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'email'
-));
-
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
     return res
@@ -137,6 +121,5 @@ const deleteAdmin = tryCatch(async (req, res) => {
 module.exports = {
   addAdmin,
   forgotPassword,
-  adminLogin,
   deleteAdmin,
 };
