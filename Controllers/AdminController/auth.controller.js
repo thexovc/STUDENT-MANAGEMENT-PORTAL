@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const path = require('path');
 
 const { createToken } = require('../../Utils/createToken');
@@ -9,20 +8,21 @@ const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
-const adminLogin = tryCatch(async (req, res, next) => {
-  const { email, password } = req.body;
+const { tryCatch } = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'Utils',
+  'try_catch'
+));
 
-  const found = await Admin.findOne({ emailAddress: email });
-  const match = await bcrypt.compare(password, found.password);
-
-  // remove password from the payload and send
-  if (found && match) {
-    const payload = { found };
-    delete payload.password;
-    return isAdmin(payload);
-  }
-  return next(new AppError('Invalid email or password', 404));
-});
+const { sendForgotPasswordEmail } = require(path.join(
+  __dirname,
+  '..',
+  '..',
+  'Utils',
+  'email'
+));
 
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {

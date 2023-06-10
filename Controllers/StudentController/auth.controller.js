@@ -5,34 +5,30 @@ const { userSchema } = require('../../Utils/schemaValidations.joi');
 const { tryCatch } = require('../../Utils/try_catch');
 
 const openAccount = tryCatch(async (req, res, next) => {
-  const { email, name, matno } = req.body;
+  const { email, name, matno, password } = req.body;
 
   const { error } = await userSchema.validate(req.body, {
     abortEarly: false,
   });
-  if (error) {
-    return next(new AppError(`${error}`, 422));
-  }
+  if (error) return next(new AppError(`${error}`, 422));
   const found = await Student.findOne({
     fullName: name,
     matriculationNo: matno,
   });
   if (!found) {
     return next(
-      new AppError(
-        'you entered an invalid name or matriculation number, please check and try again',
-        404
-      )
+      new AppError('You entered an invalid name or matriculation number', 404)
     );
   }
+  const hash = await bcrypt.hash(password, process.env.ROUNDS);
   const newStudent = new Student({
     fullName: name,
     emailAddress: email,
     matriculationNo: matno,
+    password: hash,
   });
   newStudent.save().then(() => {
     const token = createToken({
-      name: newStudent.fullName,
       id: newStudent._id,
     });
     res.cookie('id', token, {
@@ -42,8 +38,8 @@ const openAccount = tryCatch(async (req, res, next) => {
       maxAge: 1 * 24 * 60 * 60 * 1000,
     });
     res.status(201).json({
-      status: 'success',
-      message: 'student successfully added',
+      success: true,
+      message: 'Student successfully added',
       data: {
         name,
         matno,

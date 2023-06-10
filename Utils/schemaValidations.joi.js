@@ -1,42 +1,20 @@
 const Joi = require('joi');
 
-const adminRegistration = Joi.object({
-  name: Joi.string().required().messages({
-    'any.required': 'Name field cannot be empty',
-  }),
-  email: Joi.string()
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-    .required()
-    .messages({
-      'string.pattern.base': 'Email is not a valid email address',
-    }),
-  password: Joi.string()
-    .regex(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-    )
-    .required()
-    .messages({
-      'string.pattern.base':
-        'Your password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character. it should be at least 8 characters long',
-    }),
-});
-
-const loginSchema = Joi.object({
+const userSchema = Joi.object({
   email: Joi.string().required().messages({
     'any.required': 'Email field cannot be empty',
   }),
-  password: Joi.string()
-    .regex(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/
-    )
-    .required()
-    .messages({
-      'string.pattern.base':
-        'Your password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character. it should be at least 8 characters long',
-    }),
+  password: Joi.string().required().messages({
+    'any.required': 'Password field cannot be empty',
+  }),
+  name: Joi.string().required().messages({
+    'any.required': 'Name field cannot be empty',
+  }),
+  matno: Joi.string().required().messages({
+    'any.required': 'Mat no field cannot be empty',
+  }),
 });
 
 module.exports = {
-  adminRegistration,
-  loginSchema,
+  userSchema,
 };

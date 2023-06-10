@@ -4,12 +4,18 @@ const {
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const { isAdmin } = require('../Utils/isAdmin');
+const { Authenticate } = require(join(
+  __dirname,
+  '..',
+  'Middlewares',
+  'Authentication'
+));
 
 const {
   forgotPassword,
   addAdmin,
   adminLogin,
+  adminDance,
   deleteAdmin,
 } = require('../Controllers/AdminController/auth.controller');
 const { Authenticate } = require('../Middlewares/Authentication');
