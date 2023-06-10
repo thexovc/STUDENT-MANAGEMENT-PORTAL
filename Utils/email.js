@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.AUTH_EMAIL,
     pass: process.env.AUTH_PASS,
-  }
+  },
 });
 
 transporter.verify((error, success) => {
@@ -23,10 +23,10 @@ const handlebarOptions = {
   viewEngine: {
     defaultLayout: false,
     extName: '.hbs',
-    partialsDir: path.resolve(__dirname, '..', 'email-templates')
+    partialsDir: path.resolve(__dirname, '..', 'email-templates'),
   },
   viewPath: path.resolve(__dirname, '..', 'email-templates'),
-  extName: '.hbs'
+  extName: '.hbs',
 };
 
 transporter.use('compile', hbs(handlebarOptions));
@@ -39,8 +39,8 @@ const sendForgotPasswordEmail = async ({ email, password }) => {
     subject: 'Password Recovery',
     template: 'forgotPassword',
     context: {
-      password
-    }
+      password,
+    },
   };
 
   return new Promise((resolve, reject) => {
@@ -57,5 +57,5 @@ const sendForgotPasswordEmail = async ({ email, password }) => {
 };
 
 module.exports = {
-  sendForgotPasswordEmail
+  sendForgotPasswordEmail,
 };

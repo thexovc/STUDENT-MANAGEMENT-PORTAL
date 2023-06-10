@@ -1,23 +1,16 @@
-const { join } = require('path');
 const {
   getStudentData,
   getSingleStudent,
   getStudentByYear,
 } = require('../Controllers/AdminController/getData.controller');
 
-const { Authenticate} = require(join(
-  __dirname,
-  '..',
-  'Middlewares',
-  'Authentication'
-));
-
 const {
   forgotPassword,
   addAdmin,
+  deleteAdmin,
   adminLogin,
-  adminDance
 } = require('../Controllers/AdminController/auth.controller');
+const { Authenticate } = require('../Middlewares/Authentication');
 
 const adminRoute = require('express').Router();
 
@@ -32,6 +25,8 @@ adminRoute.post('/forgotPassword', forgotPassword);
 adminRoute.post('/addAdmin', addAdmin);
 
 adminRoute.post('/login', adminLogin);
+
+adminRoute.post('/delete', deleteAdmin);
 
 module.exports = {
   adminRoute,

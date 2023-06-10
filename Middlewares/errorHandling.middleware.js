@@ -19,6 +19,7 @@ const productionFunction = (err, res) => {
 };
 
 const developmentFunction = (err, res) => {
+  console.log(err);
   if (err.operationalError) {
     res.status(err.statusCode).json({
       status: err.status,
