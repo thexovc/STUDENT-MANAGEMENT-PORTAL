@@ -4,14 +4,6 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const Db = require(path.join(__dirname, 'Db', 'connection'));
 
-const { qrCodeGenerator } = require(path.join(
-  __dirname,
-  'Controllers',
-  'qrCode.controller'
-));
-
-qrCodeGenerator();
-
 const { app } = require(path.join(__dirname, 'app'));
 
 Db();

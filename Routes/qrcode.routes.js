@@ -22,11 +22,10 @@ const upload = multer({
 
 const qrCode = require('express').Router();
 
-qrCode.post('api/SMP/qrcode/generate', Authenticate, qrCodeGenerator);
+qrCode.post('/generate', Authenticate, qrCodeGenerator);
 
-qrCode.post(
-  '/api/SMP/qrcode/verify',
-  Authenticate,
-  upload.single('qrcode'),
-  qrCodeReader
-);
+qrCode.post('/verify', Authenticate, upload.single('qrcode'), qrCodeReader);
+
+module.exports = {
+  qrCode,
+};
