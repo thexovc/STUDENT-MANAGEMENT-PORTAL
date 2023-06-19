@@ -1,11 +1,10 @@
-const path = require('path');
+const bcrypt = require('bcrypt');
 
 const { createToken } = require('../../Utils/createToken');
 const { AppError } = require('../../Utils/appError');
 const { Admin } = require('../../Models/Admin.model');
 const { tryCatch } = require('../../Utils/try_catch');
 const { loginSchema } = require('../../Utils/schemaValidations.joi');
-const { isAdmin } = require('../../Utils/isAdmin');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 
 const addAdmin = tryCatch(async (req, res) => {
@@ -86,7 +85,7 @@ const adminLogin = tryCatch(async (req, res, next) => {
   if (!match) return next(new AppError('Invalid email or password', 404));
 
   await delete found._doc['password'];
-  const token = await createToken(found._id);
+  const token = await createToken(found);
   res.cookie('id', `${token}`, {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 2,
@@ -94,7 +93,8 @@ const adminLogin = tryCatch(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: 'Admin logged in successfully',
-    data: found,
+    data: token,
+    user: found,
   });
 });
 
