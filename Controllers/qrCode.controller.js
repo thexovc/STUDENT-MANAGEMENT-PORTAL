@@ -17,7 +17,7 @@ const { AppError } = require('../Utils/appError');
 const qrCodeGenerator = tryCatch(async (req, res, next) => {
   const foundStudent = await Student.findOne(
     { _id: req.user },
-    { password: 0, emailAddress: 0 }
+    { password: 0, emailAddress: 0}
   );
   qrCode.toString(
     foundStudent
@@ -27,7 +27,13 @@ const qrCodeGenerator = tryCatch(async (req, res, next) => {
     },
     function (err, data) {
       if (err) throw err;
-      console.log(data);
+     foundStudent.qrCode = data;
+    await  foundStudent.save();
+    return res.status(201).json({
+      success:true,
+      message:"Qrcode generation was successful",
+      data:{}
+     })
     }
   );
 });
