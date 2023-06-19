@@ -1,20 +1,7 @@
 const path = require('path');
 
-const { Student } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Models',
-  'Student.model'
-));
-
-const { tryCatch } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'try_catch'
-));
+const { Student } = require('../../Models/Student.model');
+const { tryCatch } = require('../../Utils/try_catch');
 
 const getStudentData = tryCatch(async (req, res, next) => {
   try {
@@ -55,6 +42,10 @@ const getStudentByYear = tryCatch(async (req, res, next) => {
     console.log(error.message);
   }
 });
+
+module.exports = {
+  updateAttendance,
+};
 
 module.exports = {
   getStudentData,

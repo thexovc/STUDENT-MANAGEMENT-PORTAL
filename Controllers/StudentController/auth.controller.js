@@ -1,46 +1,8 @@
-const path = require('path');
-
-const bcrypt = require('bcrypt');
-
-const { createToken } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'createToken'
-));
-
-const { AppError } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'appError'
-));
-
-const { Student } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Models',
-  'Student.model'
-));
-
-const { userSchema } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'schemaValidations.joi'
-));
-
-const { tryCatch } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'try_catch'
-));
+const { createToken } = require('../../Utils/createToken');
+const { AppError } = require('../../Utils/appError');
+const { Student } = require('../../Models/Student.model');
+const { userSchema } = require('../../Utils/schemaValidations.joi');
+const { tryCatch } = require('../../Utils/try_catch');
 
 const openAccount = tryCatch(async (req, res, next) => {
   const { email, name, matno, password } = req.body;
@@ -55,10 +17,7 @@ const openAccount = tryCatch(async (req, res, next) => {
   });
   if (!found) {
     return next(
-      new AppError(
-        'You entered an invalid name or matriculation number',
-        404
-      )
+      new AppError('You entered an invalid name or matriculation number', 404)
     );
   }
   const hash = await bcrypt.hash(password, process.env.ROUNDS);

@@ -1,5 +1,6 @@
-const path = require('path');
+const bcrypt = require('bcrypt');
 
+<<<<<<< HEAD
 const { createToken } = require(path.join(
   __dirname,
   '..',
@@ -41,6 +42,14 @@ const { sendForgotPasswordEmail } = require(path.join(
   'Utils',
   'email'
 ));
+=======
+const { createToken } = require('../../Utils/createToken');
+const { AppError } = require('../../Utils/appError');
+const { Admin } = require('../../Models/Admin.model');
+const { tryCatch } = require('../../Utils/try_catch');
+const { loginSchema } = require('../../Utils/schemaValidations.joi');
+const { sendForgotPasswordEmail } = require('../../Utils/email');
+>>>>>>> db22cb089054b3594694d8a3a27f574df0cfc693
 
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
@@ -119,7 +128,7 @@ const adminLogin = tryCatch(async (req, res, next) => {
 
   if (!match) return next(new AppError('Invalid email or password', 404));
   await delete found._doc['password'];
-  const token = await createToken(found._id);
+  const token = await createToken(found);
   res.cookie('id', `${token}`, {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 2,
@@ -127,12 +136,40 @@ const adminLogin = tryCatch(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     message: 'Admin logged in successfully',
-    data: found,
+    data: token,
+    user: found,
   });
+});
+
+const deleteAdmin = tryCatch(async (req, res) => {
+  if (req.Admin.role !== 'super admin') {
+    return res
+      .status(403)
+      .json({ error: 'You are not authorized to perform this action' });
+  }
+
+  try {
+    const { email } = req.body;
+
+    const adminToDelete = await Admin.findOne({ emailAddress: email }).exec();
+    if (!adminToDelete) {
+      return next(new AppError('Admin not found', 404));
+    }
+
+    if (adminToDelete.role === 'super admin') {
+      return next(new AppError('Cannot delete super admin', 403));
+    }
+
+    await Admin.deleteOne({ emailAddress: email }).exec();
+    res.status(200).json({ message: 'Admin added successfully.' });
+  } catch (error) {
+    return next(new AppError('Error deleting admin.', 400));
+  }
 });
 
 module.exports = {
   addAdmin,
   forgotPassword,
   adminLogin,
+  deleteAdmin,
 };

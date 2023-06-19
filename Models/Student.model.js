@@ -14,11 +14,24 @@ const studentSchema = new mongoose.Schema({
   },
   year: {
     type: String,
-    required: true,
+  },
+  session: {
+    type: String,
   },
   courses: [
     {
-      type: String,
+      code: {
+        type: String,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      credit: {
+        type: String,
+        required: true,
+      },
     },
   ],
   role: {
