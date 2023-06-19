@@ -8,6 +8,8 @@ const { createToken } = require(path.join(
   'createToken'
 ));
 
+const bcrypt = require('bcrypt');
+
 const { AppError } = require(path.join(
   __dirname,
   '..',
@@ -116,7 +118,6 @@ const adminLogin = tryCatch(async (req, res, next) => {
   const match = await bcrypt.compare(password, found.password);
 
   if (!match) return next(new AppError('Invalid email or password', 404));
-
   await delete found._doc['password'];
   const token = await createToken(found._id);
   res.cookie('id', `${token}`, {

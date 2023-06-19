@@ -24,8 +24,11 @@ const studentSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['student'],
-    default: 'student'
-  }
+    default: 'student',
+  },
+  qrCode: {
+    svgLink: String,
+  },
 });
 
 const Student = mongoose.model('Student', studentSchema);
