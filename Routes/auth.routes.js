@@ -1,12 +1,12 @@
 const path = require('path');
 
 const {
-  openAccount,
+  studentLogin,
 } = require('../Controllers/StudentController/auth.controller');
 
 const userRoute = require('express').Router();
 
-userRoute.post('/', openAccount);
+userRoute.post('/student/login', studentLogin);
 
 module.exports = {
   userRoute,
