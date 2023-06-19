@@ -6,7 +6,7 @@ const {
 
 const userRoute = require('express').Router();
 
-userRoute.post('/student/login', studentLogin);
+userRoute.post('/', studentLogin);
 
 module.exports = {
   userRoute,

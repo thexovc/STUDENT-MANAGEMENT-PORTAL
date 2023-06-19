@@ -44,10 +44,6 @@ const getStudentByYear = tryCatch(async (req, res, next) => {
 });
 
 module.exports = {
-  updateAttendance,
-};
-
-module.exports = {
   getStudentData,
   getSingleStudent,
   getStudentByYear,

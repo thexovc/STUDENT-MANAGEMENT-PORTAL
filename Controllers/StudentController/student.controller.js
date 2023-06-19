@@ -1,4 +1,5 @@
 const { Student } = require('../../Models/Student.model');
+const { tryCatch } = require('../../Utils/try_catch');
 
 const getSingleStudent = tryCatch(async (req, res, next) => {
   try {

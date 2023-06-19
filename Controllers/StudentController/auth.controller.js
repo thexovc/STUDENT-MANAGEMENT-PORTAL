@@ -5,27 +5,22 @@ const { userSchema } = require('../../Utils/schemaValidations.joi');
 const { tryCatch } = require('../../Utils/try_catch');
 
 const studentLogin = async (req, res, next) => {
-  const { name, matno } = req.body;
+  const { email, matno } = req.body;
+
+  console.log(req.body);
 
   try {
     const student = await Student.findOne({
-      fullName: name,
-      matriculationNo: matno,
+      emailAddress: email,
     });
 
     if (!student) {
-      throw new AppError('Invalid name or matriculation number', 404);
+      throw new AppError('Invalid name or matriculation number', 400);
     }
 
     // If the student is found, you can perform additional login logic here if needed
 
-    res.status(200).json({
-      success: true,
-      message: 'Student login successful',
-      data: {
-        student,
-      },
-    });
+    res.send(student);
   } catch (error) {
     next(error);
   }

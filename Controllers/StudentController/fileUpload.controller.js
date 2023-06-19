@@ -4,6 +4,10 @@ const pdfParse = require('pdf-parse');
 const uploadPDF = async (req, res) => {
   const pdfFile = req.file;
 
+  const { studentEmail } = req.body;
+
+  console.log({ studentEmail });
+
   try {
     pdfParse(pdfFile.buffer)
       .then(async (data) => {
@@ -88,11 +92,12 @@ const uploadPDF = async (req, res) => {
         const studentDB = await Student.findOne({ emailAddress, year });
 
         if (studentDB) {
-          res.status(400).send({ msg: 'Student already exist!' });
+          // res.status(400).send({ msg: 'Student already exist!' });
+          res.send(studentDB);
         } else {
           const newStudent = await Student.create({
             fullName: name,
-            emailAddress,
+            emailAddress: `${studentEmail}`,
             matriculationNo,
             courses,
             year,
