@@ -39,6 +39,10 @@ const studentSchema = new mongoose.Schema({
     enum: ['student'],
     default: 'student',
   },
+  created_at: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 const Student = mongoose.model('Student', studentSchema);

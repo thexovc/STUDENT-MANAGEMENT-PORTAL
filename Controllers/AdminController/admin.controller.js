@@ -5,9 +5,12 @@ const { tryCatch } = require('../../Utils/try_catch');
 
 const getStudentData = tryCatch(async (req, res, next) => {
   try {
-    const data = await Student.find({});
-
-    res.send(data);
+    const pageNumber = req.params.page || 1;
+    const pageSize = 1;
+    const skip = (pageNumber - 1) * pageSize;
+    const data = await Student.find({}).skip(skip).limit(pageSize);
+    const totalCount = await Student.countDocuments();
+    res.send({ data, totalCount });
   } catch (error) {
     console.error(error.message);
     res.sendStatus(500);

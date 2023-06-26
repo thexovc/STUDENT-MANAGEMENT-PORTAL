@@ -19,6 +19,10 @@ const adminSchema = new mongoose.Schema({
     enum: ['super admin', 'admin'],
     default: 'admin',
   },
+  created_at: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 const Admin = mongoose.model('Admin', adminSchema);

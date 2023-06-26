@@ -20,7 +20,7 @@ const adminRoute = require('express').Router();
 adminRoute.post('/login', adminLogin);
 adminRoute.post('/forgotPassword', forgotPassword);
 
-adminRoute.get('/all', isAdmin, getStudentData);
+adminRoute.get('/all/:page', isAdmin, getStudentData);
 
 adminRoute.get('/student/:id', isAdmin, getSingleStudent);
 

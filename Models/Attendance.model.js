@@ -22,6 +22,10 @@ const attendanceSchema = new mongoose.Schema({
     default: false,
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 const Attendance = mongoose.model('Attendance', attendanceSchema);
