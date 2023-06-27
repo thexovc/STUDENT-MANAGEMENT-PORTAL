@@ -15,7 +15,7 @@ const { errorMiddleware } = require(path.join(
 const { studentRoute } = require('./Routes/student.routes');
 const { adminRoute } = require('./Routes/admin.routes');
 
-const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
+// const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
 const { userRoute } = require(path.join(__dirname, 'Routes', 'auth.routes'));
 
@@ -30,7 +30,7 @@ app.use(
 
 app.use(express.json()).use(express.urlencoded({ extended: false }));
 
-app.use(seeder);
+// app.use(seeder);
 
 app.use(cookieParser());
 app.use(express.json());
