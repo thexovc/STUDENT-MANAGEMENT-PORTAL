@@ -22,11 +22,11 @@ const { userRoute } = require(path.join(__dirname, 'Routes', 'auth.routes'));
 const { qrCode } = require(path.join(__dirname, 'Routes', 'qrcode.routes'));
 
 const app = express();
-app.use(
-  cors({
-    origin: '*',
-  })
-);
+// app.use(
+//   cors({
+//     origin: '*',
+//   })
+// );
 
 app.use(express.json()).use(express.urlencoded({ extended: false }));
 
