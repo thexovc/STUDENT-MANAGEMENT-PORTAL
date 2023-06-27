@@ -41,7 +41,7 @@ app.use(bodyParser.json());
 
 // const { superAdmin } = require('./seeder/admin');
 
-// console.log(superAdmin());
+// console.log(superAdmin())
 
 app.use('/smp/qrcode', qrCode);
 app.use('/smp/register', userRoute);
@@ -49,6 +49,10 @@ app.use('/smp/student/', studentRoute);
 app.use('/smp/admin/', adminRoute);
 
 app.use(errorMiddleware);
+
+app.get('/', (req, res) => {
+  res.send('Status Healthy');
+});
 
 module.exports = {
   app,
