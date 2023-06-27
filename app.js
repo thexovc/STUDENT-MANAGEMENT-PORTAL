@@ -19,6 +19,8 @@ const seeder = require(path.join(__dirname, 'Routes', 'seeding.routes'));
 
 const { userRoute } = require(path.join(__dirname, 'Routes', 'auth.routes'));
 
+const { qrCode } = require(path.join(__dirname, 'Routes', 'qrcode.routes'));
+
 const app = express();
 app.use(cors());
 
@@ -37,6 +39,7 @@ app.use(bodyParser.json());
 
 // console.log(superAdmin());
 
+app.use('/smp/qrcode', qrCode);
 app.use('/smp/register', userRoute);
 app.use('/smp/student/', studentRoute);
 app.use('/smp/admin/', adminRoute);

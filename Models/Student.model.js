@@ -39,6 +39,9 @@ const studentSchema = new mongoose.Schema({
     enum: ['student'],
     default: 'student',
   },
+  qrCode: {
+    svgLink: String,
+  },
   created_at: {
     type: Date,
     default: Date.now(),
