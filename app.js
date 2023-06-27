@@ -40,7 +40,6 @@ app.use(bodyParser.raw({ type: 'application/pdf', limit: '10mb' }));
 app.use(bodyParser.json());
 
 // const { superAdmin } = require('./seeder/admin');
-
 // console.log(superAdmin())
 
 app.use('/smp/qrcode', qrCode);
