@@ -1,55 +1,11 @@
 const bcrypt = require('bcrypt');
 
-<<<<<<< HEAD
-const { createToken } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'createToken'
-));
-
-const bcrypt = require('bcrypt');
-
-const { AppError } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'appError'
-));
-
-const { Admin } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Models',
-  'Admin.model'
-));
-
-const { tryCatch } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'try_catch'
-));
-
-const { sendForgotPasswordEmail } = require(path.join(
-  __dirname,
-  '..',
-  '..',
-  'Utils',
-  'email'
-));
-=======
 const { createToken } = require('../../Utils/createToken');
 const { AppError } = require('../../Utils/appError');
 const { Admin } = require('../../Models/Admin.model');
 const { tryCatch } = require('../../Utils/try_catch');
 const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
->>>>>>> db22cb089054b3594694d8a3a27f574df0cfc693
 
 const addAdmin = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
@@ -57,7 +13,7 @@ const addAdmin = tryCatch(async (req, res) => {
       .status(403)
       .json({ error: 'You are not authorized to perform this action' });
   }
-  const newAdmin = await req.body;
+  const newAdmin = await new Admin(req.body);
 
   bcrypt.genSalt(10, (err, salt) => {
     console.log(newAdmin);

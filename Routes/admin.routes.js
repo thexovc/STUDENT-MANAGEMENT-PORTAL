@@ -1,7 +1,9 @@
+const adminRoute = require('express').Router();
 const {
   getStudentData,
   getSingleStudent,
   getStudentByYear,
+  updateAttendance,
 } = require('../Controllers/AdminController/admin.controller');
 
 const {
@@ -11,11 +13,6 @@ const {
   adminLogin,
 } = require('../Controllers/AdminController/auth.controller');
 const { isAdmin } = require('../Middlewares/isAdmin');
-const {
-  updateAttendance,
-} = require('../Controllers/AdminController/admin.controller');
-
-const adminRoute = require('express').Router();
 
 adminRoute.post('/login', adminLogin);
 adminRoute.post('/forgotPassword', forgotPassword);
@@ -29,6 +26,8 @@ adminRoute.get('/studentByYear/:id', isAdmin, getStudentByYear);
 adminRoute.post('/addAdmin', isAdmin, addAdmin);
 
 adminRoute.post('/delete', isAdmin, deleteAdmin);
+
+adminRoute.post('/attendance', updateAttendance);
 
 module.exports = {
   adminRoute,
