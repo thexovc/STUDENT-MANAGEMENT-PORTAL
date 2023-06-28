@@ -3,6 +3,7 @@ const { AppError } = require('../../Utils/appError');
 const { Student } = require('../../Models/Student.model');
 const { userSchema } = require('../../Utils/schemaValidations.joi');
 const { tryCatch } = require('../../Utils/try_catch');
+const { sendPDFEmail } = require('../../Utils/email');
 
 const openAccount = tryCatch(async (req, res, next) => {
   const { email, name, matno, password } = req.body;
@@ -48,6 +49,17 @@ const openAccount = tryCatch(async (req, res, next) => {
   });
 });
 
+const pdf = tryCatch(async (req, res, next) => {
+  const { email } = await req.body;
+
+  const emailSent = await sendPDFEmail({ email });
+
+  if (!emailSent) {
+    return next(new AppError('Forgot password email not sent', 404));
+  }
+});
+
 module.exports = {
   openAccount,
+  pdf
 };
