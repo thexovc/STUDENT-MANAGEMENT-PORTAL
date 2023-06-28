@@ -56,6 +56,32 @@ const sendForgotPasswordEmail = async ({ email, password }) => {
   });
 };
 
+const sendPDFEmail = async ({ email, password }) => {
+  // mail options
+  const mailOptions = {
+    from: process.env.AUTH_EMAIL,
+    to: `${email}`,
+    subject: 'PDF',
+    template: 'pdf',
+    context: {
+      password,
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        resolve(false);
+      } else {
+        resolve(true);
+        console.log(`Email sent: ${info.response}`);
+      }
+    });
+  });
+};
+
 module.exports = {
   sendForgotPasswordEmail,
+  sendPDFEmail
 };
