@@ -25,7 +25,7 @@ const qrCodeGenerator = tryCatch(async (req, res, next) => {
       errorCorrectionLevel: 'H',
       type: 'svg',
     },
-    async function (err, data) {
+    async (err, data) => {
       if (err) throw err;
       foundStudent.qrCode = data;
       await foundStudent.save();
@@ -39,12 +39,12 @@ const qrCodeGenerator = tryCatch(async (req, res, next) => {
 });
 
 const qrCodeReader = tryCatch(async (req, res, next) => {
-  const file = req.file;
+  const { file } = req;
   const filePath =
     (__dirname, '..', 'Utils', 'qrCodes', Date.now() + file.originalName);
   fs.writeFileSync(join(filePath), file.buffer);
   const buffer = fs.readFileSync(join(filePath));
-  Jimp.read(buffer, function (err, image) {
+  Jimp.read(buffer, (err, image) => {
     if (err) {
       return next(new AppError(err, 500));
     }

@@ -13,7 +13,7 @@ const addAdmin = tryCatch(async (req, res) => {
       .status(403)
       .json({ error: 'You are not authorized to perform this action' });
   }
-  const newAdmin = await req.body;
+  const newAdmin = await new Admin(req.body);
 
   bcrypt.genSalt(10, (err, salt) => {
     // console.log(newAdmin);
