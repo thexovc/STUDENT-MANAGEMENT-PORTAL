@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 const fs = require('fs');
-const pdf = require('html-pdf');
 const handlebars = require('handlebars');
+const puppeteer = require('puppeteer');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -91,20 +91,14 @@ const sendEmailPDFUpload = async ({
   session,
   studentId,
 }) => {
-  // Define the file path for the HTML template
-  const templateFilePath = 'email-templates/uploadPdf.html';
-
-  // Read the HTML template file
-  fs.readFile(templateFilePath, 'utf8', (err, templateData) => {
-    if (err) {
-      console.error('Error reading HTML template:', err);
-      // return res.status(500).json({ error: 'Error reading HTML template' });
-      return undefined;
-    }
+  try {
+    // Read the HTML template file
+    const templateFilePath = 'email-templates/uploadPdf.html';
+    const templateData = await fs.promises.readFile(templateFilePath, 'utf8');
 
     const compiledTemplate = handlebars.compile(templateData);
 
-    // Render the email template with dynamic values using EJS
+    // Render the email template with dynamic values using Handlebars
     const renderedTemplate = compiledTemplate({
       email,
       fullName,
@@ -113,49 +107,39 @@ const sendEmailPDFUpload = async ({
       studentId,
     });
 
-    // Generate the PDF from the rendered template
-    pdf.create(renderedTemplate).toBuffer((pdfErr, buffer) => {
-      if (pdfErr) {
-        console.error('Error generating PDF:', pdfErr);
-        return undefined;
-        // return res.status(500).json({ error: 'Error generating PDF' });
-      }
+    // Launch Puppeteer in new Headless mode
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
 
-      const mailOptions = {
-        from: process.env.AUTH_EMAIL,
-        to: `${email}`,
-        subject: 'SMP Registration Slip',
-        template: 'upload',
-        context: {
-          email,
-          fullName,
-          matricNo,
-          session,
-          studentId,
+    // Set the content of the page to the rendered HTML template
+    await page.setContent(renderedTemplate);
+
+    // Generate the PDF
+    const pdfBuffer = await page.pdf();
+
+    // Close Puppeteer
+    await browser.close();
+
+    const mailOptions = {
+      from: process.env.AUTH_EMAIL,
+      to: email,
+      subject: 'SMP Registration Slip',
+      html: renderedTemplate,
+      attachments: [
+        {
+          filename: 'smp_registration_slip.pdf',
+          content: pdfBuffer,
         },
-        attachments: [
-          {
-            filename: 'smp_registration_slip.pdf',
-            content: buffer,
-          },
-        ],
-      };
+      ],
+    };
 
-      return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (sendErr, info) => {
-          if (sendErr) {
-            console.error('Error sending email:', sendErr);
-            resolve(false);
-            // return res.status(500).json({ error: 'Error sending email' });
-          }
-
-          console.log('Email sent successfully:', info.response);
-          resolve(true);
-          // res.json({ message: 'Email sent successfully' });
-        });
-      });
-    });
-  });
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully.');
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
 };
 
 module.exports = {
