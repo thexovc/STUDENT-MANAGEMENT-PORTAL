@@ -91,15 +91,20 @@ const sendEmailPDFUpload = async ({
   session,
   studentId,
 }) => {
-  try {
-    const templateFilePath = 'email-templates/uploadPdf.html';
+  // Define the file path for the HTML template
+  const templateFilePath = 'email-templates/uploadPdf.html';
 
-    // Read the HTML template file
-    const templateData = await fs.promises.readFile(templateFilePath, 'utf8');
+  // Read the HTML template file
+  fs.readFile(templateFilePath, 'utf8', (err, templateData) => {
+    if (err) {
+      console.error('Error reading HTML template:', err);
+      // return res.status(500).json({ error: 'Error reading HTML template' });
+      return undefined;
+    }
 
     const compiledTemplate = handlebars.compile(templateData);
 
-    // Render the email template with dynamic values using Handlebars
+    // Render the email template with dynamic values using EJS
     const renderedTemplate = compiledTemplate({
       email,
       fullName,
@@ -108,21 +113,51 @@ const sendEmailPDFUpload = async ({
       studentId,
     });
 
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: email,
-      subject: 'SMP Registration Slip',
-      html: renderedTemplate,
-    };
+    // Generate the PDF from the rendered template
+    pdf.create(renderedTemplate).toBuffer((pdfErr, buffer) => {
+      if (pdfErr) {
+        console.error('Error generating PDF:', pdfErr);
+        return undefined;
+        // return res.status(500).json({ error: 'Error generating PDF' });
+      }
 
-    // Send the email
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.response);
-    return true;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return false;
-  }
+      const mailOptions = {
+        from: process.env.AUTH_EMAIL,
+        to: `${email}`,
+        subject: 'SMP Registration Slip',
+        template: 'upload',
+        context: {
+          email,
+          fullName,
+          matricNo,
+          session,
+          studentId,
+        },
+        attachments: [
+          {
+            filename: 'smp_registration_slip.pdf',
+            content: buffer,
+          },
+        ],
+      };
+
+      return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (sendErr, info) => {
+          if (sendErr) {
+            console.error('Error sending email:', sendErr);
+            resolve(false);
+            return undefined;
+            // return res.status(500).json({ error: 'Error sending email' });
+          }
+
+          console.log('Email sent successfully:', info.response);
+          resolve(true);
+          return info;
+          // res.json({ message: 'Email sent successfully' });
+        });
+      });
+    });
+  });
 };
 
 module.exports = {
