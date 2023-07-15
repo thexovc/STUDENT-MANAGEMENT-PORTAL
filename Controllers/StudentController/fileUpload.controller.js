@@ -134,6 +134,12 @@ const sendEmail = async (req, res) => {
     session,
     studentId,
   });
+
+  if (emailSent) {
+    res.json({ message: 'Email sent successfully' });
+  } else {
+    return res.status(500).json({ error: 'Error sending email' });
+  }
 };
 
 module.exports = {

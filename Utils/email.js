@@ -98,8 +98,8 @@ const sendEmailPDFUpload = async ({
   fs.readFile(templateFilePath, 'utf8', (err, templateData) => {
     if (err) {
       console.error('Error reading HTML template:', err);
-      return;
       // return res.status(500).json({ error: 'Error reading HTML template' });
+      return undefined;
     }
 
     const compiledTemplate = handlebars.compile(templateData);
