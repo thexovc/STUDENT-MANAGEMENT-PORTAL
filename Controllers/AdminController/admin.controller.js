@@ -46,46 +46,67 @@ const getStudentByYear = tryCatch(async (req, res) => {
 });
 
 const updateAttendance = tryCatch(async (req, res) => {
+  const { courseCode, studentId } = req.body;
+
   try {
-    const courseCode = req.body.course;
-    const matriculationNo = req.body.matno;
-    const studentDB = await Student.findOne({ matriculationNo });
-    if (studentDB) {
-      const newAttendance = new Attendance({
-        fullName: studentDB.fullName,
-        emailAddress: studentDB.emailAddress,
-        MatNo: matriculationNo,
-        courseCode: req.body.course,
-      });
-      const { courses } = studentDB;
-      for (let i = 0; i < courses.length; i++) {
-        if (courses[i].code === courseCode) {
-          const attendanceDB = await Attendance.findOne({
-            courseCode: req.body.course,
-            MatNo: matriculationNo,
-          });
-          if (attendanceDB) {
-            res.send('Attendance has been taken');
-          } else {
-            newAttendance.attended = true;
-            newAttendance.save();
-            res.send('Attendance taken');
-          }
-        } else {
-          res.send('Student doesn;t take this course');
-        }
-      }
-    } else {
-      res.send('No student found');
+    // Find the student document by _id
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
     }
+
+    // Check if the student has already registered the course code
+    const existingAttendance = await Attendance.findOne({
+      MatNo: student.matriculationNo,
+      courseCode,
+    });
+
+    if (existingAttendance) {
+      return res
+        .status(400)
+        .json({ error: 'Student already registered for this course' });
+    }
+
+    // Create a new attendance record
+    const attendance = new Attendance({
+      fullName: student.fullName,
+      emailAddress: student.emailAddress,
+      MatNo: student.matriculationNo,
+      attended: false,
+      courseCode,
+    });
+
+    // Save the attendance record
+    await attendance.save();
+
+    return res
+      .status(200)
+      .json({ message: 'Attendance recorded successfully' });
   } catch (error) {
-    console.log(error.message);
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+const getAttendanceByCode = async (req, res) => {
+  const { courseCode } = req.body;
+
+  try {
+    // Find all attendance records with the provided course code
+    const attendance = await Attendance.find({ courseCode });
+
+    return res.status(200).json(attendance);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 module.exports = {
   getStudentData,
   getSingleStudent,
   getStudentByYear,
   updateAttendance,
+  getAttendanceByCode,
 };

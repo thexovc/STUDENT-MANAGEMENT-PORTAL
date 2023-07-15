@@ -1,5 +1,6 @@
 const { Student } = require('../../Models/Student.model');
 const pdfParse = require('pdf-parse');
+const { sendEmailPDFUpload } = require('../../Utils/email');
 
 const uploadPDF = async (req, res) => {
   const pdfFile = req.file;
@@ -122,6 +123,20 @@ const uploadPDF = async (req, res) => {
   }
 };
 
+const sendEmail = async (req, res) => {
+  // Generate the PDF
+  const { email, fullName, matricNo, session, studentId } = req.body;
+
+  const emailSent = await sendEmailPDFUpload({
+    email,
+    fullName,
+    matricNo,
+    session,
+    studentId,
+  });
+};
+
 module.exports = {
   uploadPDF,
+  sendEmail,
 };

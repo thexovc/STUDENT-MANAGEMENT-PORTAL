@@ -6,8 +6,9 @@ const { Admin } = require('../../Models/Admin.model');
 const { tryCatch } = require('../../Utils/try_catch');
 const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
+const { generateRandomPassword } = require('../../Utils/helper');
 
-const addAdmin = tryCatch(async (req, res) => {
+const addAdminFM = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
     return res
       .status(403)
@@ -27,6 +28,53 @@ const addAdmin = tryCatch(async (req, res) => {
     });
   });
 });
+
+const addAdmin = async (req, res) => {
+  const { fullName, emailAddress } = req.body;
+
+  try {
+    if (req.Admin.role !== 'super admin') {
+      return res.status(403).json({ error: 'Only super admin can add admin' });
+    }
+
+    // Generate a random password for the admin
+    const generatedPassword = generateRandomPassword();
+
+    // Hash the password before saving to the database
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+    // Create the new admin document
+    const newAdmin = new Admin({
+      fullName,
+      emailAddress,
+      password: hashedPassword,
+      role: 'admin',
+    });
+
+    // Save the new admin to the database
+    await newAdmin.save();
+
+    // Send an email with the generated password to the admin
+    const emailContent = {
+      from: 'nacos-smp@example.com',
+      to: emailAddress,
+      subject: 'Welcome to the Admin Panel',
+      text: `Hello ${fullName},\n\nYou have been added as an admin with the following credentials:\nEmail: ${emailAddress}\nPassword: ${generatedPassword}`,
+    };
+
+    emailService.send(emailContent, (err, message) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to send email' });
+      }
+
+      return res.status(200).json({ message: 'Admin added successfully' });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 const forgotPassword = tryCatch(async (req, res, next) => {
   const { email } = await req.body;

@@ -35,6 +35,8 @@ const pdf = tryCatch(async (req, res, next) => {
   if (!emailSent) {
     return next(new AppError('Forgot password email not sent', 404));
   }
+
+  return res.json({ message: 'Email sent successfully' });
 });
 
 module.exports = {
