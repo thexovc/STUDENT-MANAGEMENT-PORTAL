@@ -92,13 +92,14 @@ const sendEmailPDFUpload = async ({
   studentId,
 }) => {
   // Define the file path for the HTML template
-  const templateFilePath = 'email-template/uploadPdf.html';
+  const templateFilePath = 'email-templates/uploadPdf.html';
 
   // Read the HTML template file
   fs.readFile(templateFilePath, 'utf8', (err, templateData) => {
     if (err) {
       console.error('Error reading HTML template:', err);
-      return res.status(500).json({ error: 'Error reading HTML template' });
+      return;
+      // return res.status(500).json({ error: 'Error reading HTML template' });
     }
 
     const compiledTemplate = handlebars.compile(templateData);
@@ -116,7 +117,8 @@ const sendEmailPDFUpload = async ({
     pdf.create(renderedTemplate).toBuffer((pdfErr, buffer) => {
       if (pdfErr) {
         console.error('Error generating PDF:', pdfErr);
-        return res.status(500).json({ error: 'Error generating PDF' });
+        return undefined;
+        // return res.status(500).json({ error: 'Error generating PDF' });
       }
 
       const mailOptions = {
@@ -139,14 +141,18 @@ const sendEmailPDFUpload = async ({
         ],
       };
 
-      transporter.sendMail(mailOptions, (sendErr, info) => {
-        if (sendErr) {
-          console.error('Error sending email:', sendErr);
-          // return res.status(500).json({ error: 'Error sending email' });
-        }
+      return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (sendErr, info) => {
+          if (sendErr) {
+            console.error('Error sending email:', sendErr);
+            resolve(false);
+            // return res.status(500).json({ error: 'Error sending email' });
+          }
 
-        console.log('Email sent successfully:', info.response);
-        // res.json({ message: 'Email sent successfully' });
+          console.log('Email sent successfully:', info.response);
+          resolve(true);
+          // res.json({ message: 'Email sent successfully' });
+        });
       });
     });
   });

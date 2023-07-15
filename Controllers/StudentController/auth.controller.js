@@ -6,13 +6,13 @@ const { tryCatch } = require('../../Utils/try_catch');
 const { sendPDFEmail } = require('../../Utils/email');
 
 const studentLogin = async (req, res, next) => {
-  const { email, matno } = req.body;
+  const { matno } = req.body;
 
   console.log(req.body);
 
   try {
     const student = await Student.findOne({
-      emailAddress: email,
+      matriculationNo: matno,
     });
 
     if (!student) {
