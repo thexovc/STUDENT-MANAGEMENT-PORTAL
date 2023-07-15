@@ -28,9 +28,9 @@ adminRoute.post('/addAdmin', isAdmin, addAdmin);
 
 adminRoute.post('/delete', isAdmin, deleteAdmin);
 
-adminRoute.post('/attendance', updateAttendance);
+adminRoute.post('/attendance', isAdmin, updateAttendance);
 
-adminRoute.post('/getAttendanceByCode', getAttendanceByCode);
+adminRoute.post('/getAttendanceByCode', isAdmin, getAttendanceByCode);
 
 module.exports = {
   adminRoute,
