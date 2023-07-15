@@ -3,7 +3,9 @@ const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 const fs = require('fs');
 const handlebars = require('handlebars');
-const puppeteer = require('puppeteer-core');
+// const puppeteer = require('puppeteer-core');
+// const { jsPDF } = require('jspdf');
+const PDFDocument = require('pdfkit');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -107,21 +109,23 @@ const sendEmailPDFUpload = async ({
       studentId,
     });
 
-    // Launch Puppeteer in new Headless mode
-    const browser = await puppeteer.launch({
-      executablePath: '/path/to/chrome',
-      headless: 'new',
+    // Create a new PDFDocument instance
+    const doc = new PDFDocument();
+
+    // Pipe the PDF document to a writable stream
+    const pdfStream = fs.createWriteStream('output.pdf');
+    doc.pipe(pdfStream);
+
+    // Generate the PDF content
+    doc.text(renderedTemplate);
+
+    // Finalize the PDF document
+    doc.end();
+
+    // Wait for the PDF stream to finish writing
+    await new Promise((resolve) => {
+      pdfStream.on('finish', resolve);
     });
-    const page = await browser.newPage();
-
-    // Set the content of the page to the rendered HTML template
-    await page.setContent(renderedTemplate);
-
-    // Generate the PDF
-    const pdfBuffer = await page.pdf();
-
-    // Close Puppeteer
-    await browser.close();
 
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
@@ -131,7 +135,7 @@ const sendEmailPDFUpload = async ({
       attachments: [
         {
           filename: 'smp_registration_slip.pdf',
-          content: pdfBuffer,
+          path: 'output.pdf',
         },
       ],
     };
