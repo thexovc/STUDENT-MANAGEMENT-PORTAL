@@ -24,7 +24,7 @@ adminRoute.get('/student/:id', isAdmin, getSingleStudent);
 
 adminRoute.get('/studentByYear/:id', isAdmin, getStudentByYear);
 
-adminRoute.post('/addAdmin', isAdmin, addAdmin);
+adminRoute.post('/addAdmin', addAdmin);
 
 adminRoute.post('/delete', isAdmin, deleteAdmin);
 

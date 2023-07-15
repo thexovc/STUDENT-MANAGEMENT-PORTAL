@@ -3,7 +3,7 @@ const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 const fs = require('fs');
 const handlebars = require('handlebars');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -108,7 +108,10 @@ const sendEmailPDFUpload = async ({
     });
 
     // Launch Puppeteer in new Headless mode
-    const browser = await puppeteer.launch({ headless: 'new' });
+    const browser = await puppeteer.launch({
+      executablePath: '/path/to/chrome',
+      headless: 'new',
+    });
     const page = await browser.newPage();
 
     // Set the content of the page to the rendered HTML template

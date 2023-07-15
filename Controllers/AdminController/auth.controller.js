@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-
+const nodemailer = require('nodemailer');
 const { createToken } = require('../../Utils/createToken');
 const { AppError } = require('../../Utils/appError');
 const { Admin } = require('../../Models/Admin.model');
@@ -7,6 +7,23 @@ const { tryCatch } = require('../../Utils/try_catch');
 const { loginSchema } = require('../../Utils/schemaValidations.joi');
 const { sendForgotPasswordEmail } = require('../../Utils/email');
 const { generateRandomPassword } = require('../../Utils/helper');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Ready for Message ');
+    console.log(success);
+  }
+});
 
 const addAdminFM = tryCatch(async (req, res) => {
   if (req.Admin.role !== 'super admin') {
@@ -33,9 +50,9 @@ const addAdmin = async (req, res) => {
   const { fullName, emailAddress } = req.body;
 
   try {
-    if (req.Admin.role !== 'super admin') {
-      return res.status(403).json({ error: 'Only super admin can add admin' });
-    }
+    // if (req.Admin.role !== 'super admin') {
+    //   return res.status(403).json({ error: 'Only super admin can add admin' });
+    // }
 
     // Generate a random password for the admin
     const generatedPassword = generateRandomPassword();
@@ -56,13 +73,13 @@ const addAdmin = async (req, res) => {
 
     // Send an email with the generated password to the admin
     const emailContent = {
-      from: 'nacos-smp@example.com',
-      to: emailAddress,
+      from: process.env.AUTH_EMAIL,
+      to: `${emailAddress}`,
       subject: 'Welcome to the Admin Panel',
       text: `Hello ${fullName},\n\nYou have been added as an admin with the following credentials:\nEmail: ${emailAddress}\nPassword: ${generatedPassword}`,
     };
 
-    emailService.send(emailContent, (err, message) => {
+    transporter.sendMail(emailContent, (err, info) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ error: 'Failed to send email' });

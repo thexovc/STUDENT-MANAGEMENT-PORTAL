@@ -65,7 +65,7 @@ const updateAttendance = tryCatch(async (req, res) => {
     if (existingAttendance) {
       return res
         .status(400)
-        .json({ error: 'Student already registered for this course' });
+        .json({ error: 'Student already marked attendance for this course' });
     }
 
     // Create a new attendance record
@@ -73,7 +73,7 @@ const updateAttendance = tryCatch(async (req, res) => {
       fullName: student.fullName,
       emailAddress: student.emailAddress,
       MatNo: student.matriculationNo,
-      attended: false,
+      attended: true,
       courseCode,
     });
 
