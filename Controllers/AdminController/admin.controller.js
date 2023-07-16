@@ -16,6 +16,19 @@ const getStudentData = tryCatch(async (req, res) => {
   }
 });
 
+const getStudentAllData = tryCatch(async (req, res) => {
+  try {
+    const studentDB = await Student.find({});
+    if (studentDB) {
+      res.send(studentDB);
+    } else {
+      res.send('No student found');
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 const getSingleStudent = tryCatch(async (req, res) => {
   try {
     const matriculationNo = req.params.id;
@@ -109,4 +122,5 @@ module.exports = {
   getStudentByYear,
   updateAttendance,
   getAttendanceByCode,
+  getStudentAllData,
 };

@@ -5,6 +5,7 @@ const {
   getStudentByYear,
   updateAttendance,
   getAttendanceByCode,
+  getStudentAllData,
 } = require('../Controllers/AdminController/admin.controller');
 
 const {
@@ -16,9 +17,12 @@ const {
 const { isAdmin } = require('../Middlewares/isAdmin');
 
 adminRoute.post('/login', adminLogin);
+
 adminRoute.post('/forgotPassword', forgotPassword);
 
 adminRoute.get('/all/:page', isAdmin, getStudentData);
+
+adminRoute.get('/studentAll', isAdmin, getStudentAllData);
 
 adminRoute.get('/student/:id', isAdmin, getSingleStudent);
 
