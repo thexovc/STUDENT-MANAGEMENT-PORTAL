@@ -5,7 +5,7 @@ const { tryCatch } = require('../../Utils/try_catch');
 const getStudentData = tryCatch(async (req, res) => {
   try {
     const pageNumber = req.params.page || 1;
-    const pageSize = 1;
+    const pageSize = 6;
     const skip = (pageNumber - 1) * pageSize;
     const data = await Student.find({}).skip(skip).limit(pageSize);
     const totalCount = await Student.countDocuments();
