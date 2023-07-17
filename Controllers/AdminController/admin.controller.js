@@ -1,6 +1,7 @@
 const { Student } = require('../../Models/Student.model');
 const { Attendance } = require('../../Models/Attendance.model');
 const { tryCatch } = require('../../Utils/try_catch');
+const { Admin } = require('../../Models/Admin.model');
 
 const getStudentData = tryCatch(async (req, res) => {
   try {
@@ -116,6 +117,15 @@ const getAttendanceByCode = async (req, res) => {
   }
 };
 
+const allAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find({});
+    res.json(admins);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve admins' });
+  }
+};
+
 module.exports = {
   getStudentData,
   getSingleStudent,
@@ -123,4 +133,5 @@ module.exports = {
   updateAttendance,
   getAttendanceByCode,
   getStudentAllData,
+  allAdmins,
 };

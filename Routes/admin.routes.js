@@ -6,6 +6,7 @@ const {
   updateAttendance,
   getAttendanceByCode,
   getStudentAllData,
+  allAdmins,
 } = require('../Controllers/AdminController/admin.controller');
 
 const {
@@ -28,7 +29,9 @@ adminRoute.get('/student/:id', isAdmin, getSingleStudent);
 
 adminRoute.get('/studentByYear/:id', isAdmin, getStudentByYear);
 
-adminRoute.post('/addAdmin', addAdmin);
+adminRoute.post('/addAdmin', isAdmin, addAdmin);
+
+adminRoute.post('/allAdmin', isAdmin, allAdmins);
 
 adminRoute.post('/delete', isAdmin, deleteAdmin);
 
