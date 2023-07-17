@@ -119,7 +119,7 @@ const getAttendanceByCode = async (req, res) => {
 
 const allAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find({});
+    const admins = await Admin.find({ role: 'admin' });
     res.json(admins);
   } catch (error) {
     res.status(500).json({ message: 'Failed to retrieve admins' });

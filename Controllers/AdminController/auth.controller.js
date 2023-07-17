@@ -163,12 +163,6 @@ const adminLogin = tryCatch(async (req, res, next) => {
 });
 
 const deleteAdmin = tryCatch(async (req, res) => {
-  if (req.Admin.role !== 'super admin') {
-    return res
-      .status(403)
-      .json({ error: 'You are not authorized to perform this action' });
-  }
-
   try {
     const { email } = req.body;
 
